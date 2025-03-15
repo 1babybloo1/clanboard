@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poxel Clan Board</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+        
+        .featured-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        
+        /* Responsive grid for smaller screens */
+        @media (max-width: 1100px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background-color: #222222;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            padding: 15px;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .card-title img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .card-title h3 {
+            color: #ffffff;
+            margin: 0;
+        }
+        
+        .card-description {
+            font-size: 14px;
+            color: #cccccc;
+            margin-bottom: 15px;
+        }
+        
+        .card-stats {
+            display: flex;
+            font-size: 12px;
+            color: #aaaaaa;
+        }
+        
+        .online-count {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #43b581;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+
+
+
+
+
+
+
+
+
+
+
+<body>
+    <div class="container">
+        <center><h1>Poxel Clan Board</h1></center>
+        
+        <center><h2 class="featured-title">Featured Clans</h2></center>
+        
+        <div class="grid">
+            <!-- Card 1 -->
+            <div class="card">
+                <a href="https://example.com/poxel-adventures">
+                    <img src="https://imgur.com/QsLRUx8 " alt="Poxel Adventures">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="https://imgur.com/5weEb94" alt="Icon">
+                            <h3>MYTH</h3>
+                        </div>
+                        <div class="card-description">
+                            Myth is the one of the most prestigious and innovative clans out there. Myth is certainly a great pick to join! MYTH ON TOP!
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                Available for requests
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="card">
+                <a href="https://example.com/poxel-arena">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Arena">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Arena</h3>
+                        </div>
+                        <div class="card-description">
+                            Test your skills in the Poxel Arena! Compete against players worldwide in thrilling battles and tournaments.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                567,321 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="card">
+                <a href="https://example.com/poxel-workshop">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Workshop">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Workshop</h3>
+                        </div>
+                        <div class="card-description">
+                            Create and customize your own Poxels in the Workshop! Share your creations with the community.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                321,654 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Card 4 -->
+            <div class="card">
+                <a href="https://example.com/poxel-trading">
+                    <img class="card-image" src="/api/placeholder/400/180" alt="Poxel Trading">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="/api/placeholder/24/24" alt="Icon">
+                            <h3>Poxel Trading</h3>
+                        </div>
+                        <div class="card-description">
+                            The official hub for Poxel trading! Exchange items, find rare Poxels, and grow your collection.
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="status-dot"></div>
+                                287,543 Online
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
