@@ -7,12 +7,24 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #1a1a1a;
+            background-color: #000000;
             color: #ffffff;
             margin: 0;
             padding: 0;
         }
-        
+        /* Background Image */
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('https://media.discordapp.net/attachments/1344341711106605137/1350429302977462272/3a6ac1220395319.png?ex=67d6b4cb&is=67d5634b&hm=30693fa0dc33a0af8013c219a6c5665304b41ed644532ab3cac249668789e9e9&=&format=webp&quality=lossless&width=1120&height=630') no-repeat center center;
+    background-size: cover;
+    opacity: 0.1; /* 50% opacity */
+    z-index: -1; /* Ensures it stays behind all content */
+}
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -49,7 +61,7 @@
         }
         
         .card {
-            background-color: #222222;
+            background-color: #050513;
             border-radius: 8px;
             overflow: hidden;
             transition: transform 0.3s ease;
