@@ -65,12 +65,22 @@
             background-color: #050513;
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease;
-            
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            border: 1px solid transparent;
+            position: relative;
+        }
+
+        @keyframes glowPulse {
+            0% { box-shadow: 0 0 5px rgba(78, 78, 158, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(78, 78, 158, 0.7); }
+            100% { box-shadow: 0 0 5px rgba(78, 78, 158, 0.3); }
         }
         
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 0 0 2px #4e4e9e;
+            border-color: #4e4e9e;
+            animation: glowPulse 2s infinite ease-in-out;
         }
         
         .card a {
