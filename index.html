@@ -371,13 +371,6 @@
         </div>
     </div>
 
-
-
-
-
-
-
-
     <!-- Settings Icon -->
     <div class="settings-icon" id="settingsIcon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -418,8 +411,6 @@
         </div>
     </div>
 
-
-
     <script>
         // DOM Elements
         const settingsIcon = document.getElementById('settingsIcon');
@@ -431,6 +422,45 @@
         const closedFilter = document.getElementById('closedFilter');
         const showAllButton = document.getElementById('showAllButton');
         const allCards = document.querySelectorAll('.card');
+
+        // Disable right-click on the entire document
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Disable keyboard shortcuts that might be used to view source
+        document.addEventListener('keydown', function(e) {
+            // Disable F12 key
+            if(e.keyCode == 123) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+I (Chrome DevTools)
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+C (Chrome DevTools element inspection)
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 67) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+Shift+J (Chrome DevTools console)
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Disable Ctrl+U (View Source)
+            if(e.ctrlKey && e.keyCode == 85) {
+                e.preventDefault();
+                return false;
+            }
+        });
 
         // Open Settings Modal
         settingsIcon.addEventListener('click', () => {
