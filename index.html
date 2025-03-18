@@ -15,7 +15,7 @@
         /* Background Image */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -24,7 +24,6 @@
             background-size: cover;
             opacity: 0.1; /* 10% opacity */
             z-index: -1; /* Ensures it stays behind all content */
-            transition: background-image 0.3s ease;
         }
         .container {
             max-width: 1200px;
@@ -225,33 +224,6 @@
             margin-bottom: 10px;
             color: #ddd;
         }
-
-        .input-group {
-            display: flex;
-            margin-bottom: 10px;
-        }
-
-        .input-group input[type="text"] {
-            flex: 1;
-            padding: 8px;
-            background-color: #222;
-            border: 1px solid #444;
-            color: #fff;
-            border-radius: 4px 0 0 4px;
-        }
-
-        .input-group button {
-            padding: 8px 15px;
-            background-color: #4e4e9e;
-            color: #fff;
-            border: none;
-            border-radius: 0 4px 4px 0;
-            cursor: pointer;
-        }
-
-        .input-group button:hover {
-            background-color: #5c5cb6;
-        }
         
         .filter-options {
             display: flex;
@@ -300,7 +272,7 @@
     <div class="container">
         <center><h1>Poxel Clan Board</h1></center>
         
-        <center><h2 class="featured-title">Featured Clans</h2></center>
+        <center><h2 class="featured-title">Trending Clans</h2></center>
         
         <div class="grid">
             <!-- Card 1 -->
@@ -384,15 +356,6 @@
             <span class="close-button" id="closeButton">&times;</span>
             <h2 class="settings-title">Settings</h2>
             
-            <!-- Background Image Setting -->
-            <div class="settings-section">
-                <h3>Change Background</h3>
-                <div class="input-group">
-                    <input type="text" id="bgImageInput" placeholder="Paste image URL here...">
-                    <button id="applyBgButton">Apply</button>
-                </div>
-            </div>
-            
             <!-- Filter Settings -->
             <div class="settings-section">
                 <h3>Filter Clans</h3>
@@ -416,8 +379,6 @@
         const settingsIcon = document.getElementById('settingsIcon');
         const settingsModal = document.getElementById('settingsModal');
         const closeButton = document.getElementById('closeButton');
-        const bgImageInput = document.getElementById('bgImageInput');
-        const applyBgButton = document.getElementById('applyBgButton');
         const availableFilter = document.getElementById('availableFilter');
         const closedFilter = document.getElementById('closedFilter');
         const showAllButton = document.getElementById('showAllButton');
@@ -479,45 +440,6 @@
             }
         });
 
-        // Apply Background Image
-        applyBgButton.addEventListener('click', () => {
-            const imageUrl = bgImageInput.value.trim();
-            if (imageUrl) {
-                // Create a temporary image to check if URL is valid
-                const tempImg = new Image();
-                tempImg.onload = function() {
-                    document.documentElement.style.setProperty('--bg-image', `url(${imageUrl})`);
-                    document.body.style.backgroundImage = `url(${imageUrl})`;
-                    
-                    // Update the ::before pseudo-element with JavaScript
-                    const style = document.createElement('style');
-                    style.innerHTML = `
-                        body::before {
-                            background-image: url('${imageUrl}');
-                        }
-                    `;
-                    
-                    // Remove any previous injected styles
-                    const oldStyle = document.getElementById('dynamic-bg-style');
-                    if (oldStyle) {
-                        oldStyle.remove();
-                    }
-                    
-                    // Add ID to new style and append to head
-                    style.id = 'dynamic-bg-style';
-                    document.head.appendChild(style);
-                    
-                    alert('Background image updated successfully!');
-                };
-                tempImg.onerror = function() {
-                    alert('Invalid image URL. Please try another.');
-                };
-                tempImg.src = imageUrl;
-            } else {
-                alert('Please enter a valid image URL');
-            }
-        });
-
         // Filter Clans
         function applyFilters() {
             const showAvailable = availableFilter.checked;
@@ -555,7 +477,9 @@
             <p>Powered by</p>
         </div>
         <div class="footer-center">
-            <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png" alt="Powered by Logo">
+            <div class="glowing-image-container">
+                <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png" alt="Powered by Logo" class="glowing-image">
+            </div>
         </div>
         <div class="footer-right">
             <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
@@ -566,55 +490,90 @@
 
 <style>
     .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-color: #050513;
-    border-top: 2px solid #2a2aaf;
-    padding: 15px 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
-}
-
-.footer-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 80%;
-    max-width: 1000px;
-}
-
-.footer-left p {
-    margin: 0;
-    font-size: 1rem;
-    color: #aaa;
-}
-
-.footer-center img {
-    height: 100px; /* Adjust height as needed */
-    width: auto;
-}
-
-.footer-right {
-    text-align: right;
-}
-
-.footer-right p {
-    margin: 5px 0;
-    font-size: 0.9rem;
-    color: #aaa;
-}
-
-.footer-right a {
-    color: #00b7ff;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
-.footer-right a:hover {
-    color: white;
-}
-
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: #050513;
+        border-top: 2px solid #2a2aaf;
+        padding: 15px 0;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .footer-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 80%;
+        max-width: 1000px;
+    }
+    
+    .footer-left p {
+        margin: 0;
+        font-size: 1rem;
+        color: #aaa;
+    }
+    
+    /* Glowing image container and animation */
+    .glowing-image-container {
+        position: relative;
+        display: inline-block;
+    }
+    
+    .glowing-image {
+        height: 100px;
+        width: auto;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .glowing-image-container::after {
+        content: '';
+        position: absolute;
+        top: -10px;
+        left: -10px;
+        right: -10px;
+        bottom: -10px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(78, 78, 158, 0.8) 0%, rgba(78, 78, 158, 0) 70%);
+        z-index: 1;
+        animation: pulseGlow 3s infinite ease-in-out;
+    }
+    
+    @keyframes pulseGlow {
+        0% {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+        50% {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+        100% {
+            opacity: 0.4;
+            transform: scale(0.95);
+        }
+    }
+    
+    .footer-right {
+        text-align: right;
+    }
+    
+    .footer-right p {
+        margin: 5px 0;
+        font-size: 0.9rem;
+        color: #aaa;
+    }
+    
+    .footer-right a {
+        color: #00b7ff;
+        text-decoration: none;
+        transition: color 0.3s;
+    }
+    
+    .footer-right a:hover {
+        color: white;
+    }
 </style>
 </html>
