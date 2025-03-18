@@ -122,6 +122,7 @@
         
         .card-stats {
             display: flex;
+            justify-content: space-between;
             font-size: 12px;
             color: #aaaaaa;
         }
@@ -144,6 +145,20 @@
             border-radius: 50%;
             background-color: #757575;
             margin-right: 5px;
+        }
+
+        /* New Tag */
+        .new-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff3860;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            z-index: 2;
         }
 
         /* Settings Icon */
@@ -265,6 +280,38 @@
         .show-all-button:hover {
             background-color: #5c5cb6;
         }
+
+        /* Sort Controls */
+        .sort-controls {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+        
+        .sort-button {
+            padding: 8px 15px;
+            background-color: #222;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .sort-button:hover {
+            background-color: #333;
+        }
+        
+        .sort-button.active {
+            background-color: #4e4e9e;
+        }
+        
+        .date-added {
+            font-size: 11px;
+            color: #888;
+            margin-left: 5px;
+        }
     </style>
 </head>
 
@@ -272,74 +319,17 @@
     <div class="container">
         <center><h1>Poxel Clan Board</h1></center>
         
+        <!-- Sort Controls -->
+        <div class="sort-controls">
+            <button id="sortRecent" class="sort-button active">Most Recent</button>
+            <button id="sortPopular" class="sort-button">Most Popular</button>
+            <button id="sortAlphabetical" class="sort-button">Alphabetical</button>
+        </div>
+        
         <center><h2 class="featured-title">Trending Clans</h2></center>
         
-        <div class="grid">
-            <!-- Card 1 -->
-            <div class="card" data-status="Available for Requests (Includes Requirements)">
-                <a href="https://discord.gg/wMAbVAKFnT">
-                    <center><img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png" alt=""></center>
-                    <div class="card-content">
-                        <div class="card-title">
-                            <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png" alt="Icon">
-                            <h3>MYTH</h3>
-                        </div>
-                        <div class="card-description">
-                            Myth is the one of the most prestigious and innovative clans out there. Myth is certainly a great pick to join! Master your talent and climb your way to the top of the leaderboard! MYTH ON TOP!
-                        </div>
-                        <div class="card-stats">
-                            <div class="online-count">
-                                <div class="status-dot"></div>
-                                Available for Requests (Includes Requirements)
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Card 2 -->
-            <div class="card" data-status="Closed Clan">
-                <a href="">
-                    <img class="card-image" src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231805/image_2025-03-17_171643136_ker0vn.png" alt="Poxel Arena">
-                    <div class="card-content">
-                        <div class="card-title">
-                            <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231812/image_2025-03-17_171650661_lpdtm0.png" alt="Icon">
-                            <h3>SSL</h3>
-                        </div>
-                        <div class="card-description">
-                            An original clan made by Ssslick back in the good ol' days! This clan is for developers and top tier goats!
-                        </div>
-                        <div class="card-stats">
-                            <div class="online-count">
-                                <div class="second-status-dot"></div>
-                                Closed Clan
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
-            
-            <!-- Card 3 -->
-            <div class="card" data-status="Available for Requests (Includes Requirements)">
-                <a href="https://discord.gg/7NH6t4NXJN">
-                    <img class="card-image" src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png" alt="Poxel Arena">
-                    <div class="card-content">
-                        <div class="card-title">
-                            <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png" alt="Icon">
-                            <h3>ONI</h3>
-                        </div>
-                        <div class="card-description">
-                            Another great clan! Take this place as an opportunity to thrive, master your skill in Poxel!
-                        </div>
-                        <div class="card-stats">
-                            <div class="online-count">
-                                <div class="status-dot"></div>
-                                Available for Requests (Includes Requirements)
-                            </div>
-                        </div>
-                    </div>
-                </a>
-            </div>
+        <div class="grid" id="clansGrid">
+            <!-- Cards will be generated by JavaScript -->
         </div>
     </div>
 
@@ -368,6 +358,10 @@
                         <input type="checkbox" id="closedFilter" checked>
                         <label for="closedFilter">Closed Clan</label>
                     </div>
+                    <div class="filter-option">
+                        <input type="checkbox" id="newFilter" checked>
+                        <label for="newFilter">New Clans</label>
+                    </div>
                 </div>
                 <button class="show-all-button" id="showAllButton">Show All</button>
             </div>
@@ -381,8 +375,161 @@
         const closeButton = document.getElementById('closeButton');
         const availableFilter = document.getElementById('availableFilter');
         const closedFilter = document.getElementById('closedFilter');
+        const newFilter = document.getElementById('newFilter');
         const showAllButton = document.getElementById('showAllButton');
-        const allCards = document.querySelectorAll('.card');
+        const clansGrid = document.getElementById('clansGrid');
+        
+        // Sort buttons
+        const sortRecent = document.getElementById('sortRecent');
+        const sortPopular = document.getElementById('sortPopular');
+        const sortAlphabetical = document.getElementById('sortAlphabetical');
+        
+        // Clans data array with added dateAdded and popularity properties
+        const clans = [
+            {
+                id: 1,
+                name: "MYTH",
+                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png",
+                description: "Myth is the one of the most prestigious and innovative clans out there. Myth is certainly a great pick to join! Master your talent and climb your way to the top of the leaderboard! MYTH ON TOP!",
+                status: "Available for Requests (Includes Requirements)",
+                link: "https://discord.gg/wMAbVAKFnT",
+                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png",
+                dateAdded: new Date("2025-03-13"),
+                popularity: 10000,
+                isNew: true
+            },
+            {
+                id: 2,
+                name: "SSL",
+                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231812/image_2025-03-17_171650661_lpdtm0.png",
+                description: "An original clan made by Ssslick back in the good ol' days! This clan is for developers and top tier goats!",
+                status: "Closed Clan",
+                link: "",
+                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231805/image_2025-03-17_171643136_ker0vn.png",
+                dateAdded: new Date("2025-03-15"),
+                popularity: 88,
+                isNew: false
+            },
+            {
+                id: 3,
+                name: "ONI",
+                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png",
+                description: "Another great clan! Take this place as an opportunity to thrive, master your skill in Poxel!",
+                status: "Available for Requests (Includes Requirements)",
+                link: "https://discord.gg/7NH6t4NXJN",
+                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png",
+                dateAdded: new Date("2025-03-16"),
+                popularity: 75,
+                isNew: true
+            },
+        ];
+
+        // Function to determine if a clan is new (less than 7 days old)
+        function isNewClan(dateAdded) {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+            return dateAdded > oneWeekAgo;
+        }
+
+        // Function to format date as relative time
+        function formatRelativeDate(date) {
+            const now = new Date();
+            const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+            
+            if (diffInDays === 0) {
+                return "Today";
+            } else if (diffInDays === 1) {
+                return "Yesterday";
+            } else if (diffInDays < 7) {
+                return `${diffInDays} days ago`;
+            } else {
+                return `${date.toLocaleDateString()}`;
+            }
+        }
+
+        // Create clan card element
+        function createClanCard(clan) {
+            const isNew = isNewClan(clan.dateAdded);
+            
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.setAttribute('data-status', clan.status);
+            card.setAttribute('data-date', clan.dateAdded.getTime());
+            card.setAttribute('data-popularity', clan.popularity);
+            card.setAttribute('data-name', clan.name);
+            card.setAttribute('data-new', isNew);
+            
+            let cardHTML = `
+                <a href="${clan.link}">
+                    ${isNew ? '<div class="new-tag">NEW</div>' : ''}
+                    <img class="card-image" src="${clan.coverImage}" alt="${clan.name}">
+                    <div class="card-content">
+                        <div class="card-title">
+                            <img src="${clan.logo}" alt="Icon">
+                            <h3>${clan.name}</h3>
+                        </div>
+                        <div class="card-description">
+                            ${clan.description}
+                        </div>
+                        <div class="card-stats">
+                            <div class="online-count">
+                                <div class="${clan.status === "Available for Requests (Includes Requirements)" ? "status-dot" : "second-status-dot"}"></div>
+                                ${clan.status}
+                            </div>
+                            <div class="date-added">Added: ${formatRelativeDate(clan.dateAdded)}</div>
+                        </div>
+                    </div>
+                </a>
+            `;
+            
+            card.innerHTML = cardHTML;
+            return card;
+        }
+
+        // Sort and render clans
+        function renderClans(sortBy = 'recent') {
+            clansGrid.innerHTML = '';
+            
+            let sortedClans = [...clans];
+            
+            // Apply sorting
+            if (sortBy === 'recent') {
+                sortedClans.sort((a, b) => b.dateAdded - a.dateAdded);
+            } else if (sortBy === 'popular') {
+                sortedClans.sort((a, b) => b.popularity - a.popularity);
+            } else if (sortBy === 'alphabetical') {
+                sortedClans.sort((a, b) => a.name.localeCompare(b.name));
+            }
+            
+            // Apply filters
+            const showAvailable = availableFilter.checked;
+            const showClosed = closedFilter.checked;
+            const showNew = newFilter.checked;
+            
+            sortedClans = sortedClans.filter(clan => {
+                // Filter by status
+                if ((clan.status === 'Available for Requests (Includes Requirements)' && !showAvailable) || 
+                    (clan.status === 'Closed Clan' && !showClosed)) {
+                    return false;
+                }
+                
+                // Filter by new status
+                if (isNewClan(clan.dateAdded) && !showNew) {
+                    return false;
+                }
+                
+                return true;
+            });
+            
+            // Render filtered and sorted clans
+            sortedClans.forEach(clan => {
+                const card = createClanCard(clan);
+                clansGrid.appendChild(card);
+            });
+        }
+
+        // Initial render
+        renderClans('recent');
 
         // Disable right-click on the entire document
         document.addEventListener('contextmenu', function(e) {
@@ -440,32 +587,49 @@
             }
         });
 
-        // Filter Clans
-        function applyFilters() {
-            const showAvailable = availableFilter.checked;
-            const showClosed = closedFilter.checked;
-            
-            allCards.forEach(card => {
-                const status = card.getAttribute('data-status');
-                
-                if ((status === 'Available for Requests (Includes Requirements)' && showAvailable) || 
-                    (status === 'Closed Clan' && showClosed)) {
-                    card.style.display = '';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        }
-
         // Add event listeners for filters
-        availableFilter.addEventListener('change', applyFilters);
-        closedFilter.addEventListener('change', applyFilters);
+        availableFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
+        closedFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
+        newFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
         
         // Show all clans
         showAllButton.addEventListener('click', () => {
             availableFilter.checked = true;
             closedFilter.checked = true;
-            applyFilters();
+            newFilter.checked = true;
+            renderClans(getCurrentSortMethod());
+        });
+        
+        // Get current sort method
+        function getCurrentSortMethod() {
+            if (sortRecent.classList.contains('active')) return 'recent';
+            if (sortPopular.classList.contains('active')) return 'popular';
+            if (sortAlphabetical.classList.contains('active')) return 'alphabetical';
+            return 'recent';
+        }
+        
+        // Set sort buttons active state
+        function setActiveSortButton(button) {
+            sortRecent.classList.remove('active');
+            sortPopular.classList.remove('active');
+            sortAlphabetical.classList.remove('active');
+            button.classList.add('active');
+        }
+        
+        // Sort button event listeners
+        sortRecent.addEventListener('click', () => {
+            setActiveSortButton(sortRecent);
+            renderClans('recent');
+        });
+        
+        sortPopular.addEventListener('click', () => {
+            setActiveSortButton(sortPopular);
+            renderClans('popular');
+        });
+        
+        sortAlphabetical.addEventListener('click', () => {
+            setActiveSortButton(sortAlphabetical);
+            renderClans('alphabetical');
         });
     </script>
 </body>
