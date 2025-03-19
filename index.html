@@ -323,12 +323,62 @@
             color: #888;
             margin-left: 5px;
         }
+        /* Blinking Header Effect */
+.blinking-header {
+    font-size: 32px;
+    font-weight: bold;
+    position: relative;
+    letter-spacing: 0.05em;
+    margin-bottom: 30px;
+    display: inline-block;
+    transition: color 0.1s linear;
+}
+
+.blinking-header:hover {
+    animation: violent-blink 0.2s infinite;
+}
+
+@keyframes violent-blink {
+    0% {
+        color: #ffffff;
+        text-shadow: 0 0 5px #ffffff;
+    }
+    25% {
+        color: #000000;
+        text-shadow: 0 0 5px #000000;
+    }
+    50% {
+        color: #0088ff;
+        text-shadow: 0 0 8px #0088ff;
+    }
+    75% {
+        color: #000000;
+        text-shadow: 0 0 5px #000000;
+    }
+    100% {
+        color: #ffffff;
+        text-shadow: 0 0 5px #ffffff;
+    }
+}
+
+/* Adding a shake effect for more intensity */
+.blinking-header:hover {
+    animation: violent-blink 0.2s infinite, shake 0.1s infinite;
+}
+
+@keyframes shake {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(-2px, 1px); }
+    50% { transform: translate(2px, -1px); }
+    75% { transform: translate(-1px, -1px); }
+    100% { transform: translate(0, 0); }
+}
     </style>
 </head>
 
 <body>
     <div class="container">
-        <center><h1>Poxel Clan Board</h1></center>
+        <center><h1 class="blinking-header">Poxel Clan Board</h1></center>
         
         <!-- Sort Controls -->
         <div class="sort-controls">
