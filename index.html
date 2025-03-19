@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +12,10 @@
             color: #ffffff;
             margin: 0;
             padding: 0;
-            padding-bottom: 200px;
+            min-height: 100vh;
+            position: relative;
         }
-        /* Background Image */
+
         body::before {
             content: "";
             position: fixed;
@@ -23,142 +25,150 @@
             height: 100%;
             background: url('https://res.cloudinary.com/djttn4xvk/image/upload/v1742233490/image_2025-03-17_174448412_z7zjdy.png') no-repeat center center;
             background-size: cover;
-            opacity: 0.1; /* 10% opacity */
-            z-index: -1; /* Ensures it stays behind all content */
+            opacity: 0.1;
+            z-index: -1;
         }
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            padding-bottom: 300px;
         }
-        
+
         h1 {
             font-size: 32px;
             margin-bottom: 30px;
         }
-        
+
         .featured-title {
             font-size: 24px;
             margin-bottom: 20px;
         }
-        
+
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 20px;
         }
-        
-        /* Responsive grid for smaller screens */
+
         @media (max-width: 1100px) {
             .grid {
                 grid-template-columns: repeat(2, 1fr);
             }
         }
-        
+
         @media (max-width: 700px) {
             .grid {
                 grid-template-columns: 1fr;
             }
         }
-        
+
         .card {
             background-color: #050513;
             border-radius: 8px;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease,
+                border-color 0.3s ease;
             border: 1px solid transparent;
             position: relative;
         }
 
         @keyframes glowPulse {
-            0% { box-shadow: 0 0 5px rgba(78, 78, 158, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(78, 78, 158, 0.7); }
-            100% { box-shadow: 0 0 5px rgba(78, 78, 158, 0.3); }
+            0% {
+                box-shadow: 0 0 5px rgba(78, 78, 158, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 0 20px rgba(78, 78, 158, 0.7);
+            }
+
+            100% {
+                box-shadow: 0 0 5px rgba(78, 78, 158, 0.3);
+            }
         }
-        
+
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 0 0 2px #4e4e9e;
             border-color: #ffffff;
             animation: glowPulse 2s infinite ease-in-out;
         }
-        
+
         .card a {
             text-decoration: none;
             color: inherit;
         }
-        
+
         .card-image {
             width: 100%;
             height: 180px;
             object-fit: cover;
         }
-        
+
         .card-content {
             padding: 15px;
         }
-        
+
         .card-title {
             display: flex;
             align-items: center;
             margin-bottom: 10px;
         }
-        
+
         .card-title img {
             width: 24px;
             height: 24px;
             margin-right: 10px;
         }
-        
+
         .card-title h3 {
             color: #ffffff;
             margin: 0;
         }
-        
+
         .card-description {
             font-size: 14px;
             color: #cccccc;
             margin-bottom: 15px;
         }
-        
+
         .card-stats {
             display: flex;
             justify-content: space-between;
             font-size: 12px;
             color: #aaaaaa;
         }
-        
+
         .online-count {
             display: flex;
             align-items: center;
         }
-        
-        /* Status Dot Colors */
+
         .status-dot-open {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #4ecc93; /* Green for "Open Clan" */
+            background-color: #4ecc93;
             margin-right: 5px;
         }
-        
+
         .status-dot-requests {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #ffbf00; /* Amber for "Available for Requests" */
+            background-color: #ffbf00;
             margin-right: 5px;
         }
-        
+
         .status-dot-closed {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #757575; /* Gray for "Closed Clan" */
+            background-color: #757575;
             margin-right: 5px;
         }
 
-        /* New Tag */
         .new-tag {
             position: absolute;
             top: 10px;
@@ -172,134 +182,13 @@
             z-index: 2;
         }
 
-        /* Settings Icon */
-        .settings-icon {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            width: 40px;
-            height: 40px;
-            background-color: #333;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            z-index: 1000;
-            transition: transform 0.3s ease;
-        }
-
-        .settings-icon:hover {
-            transform: rotate(30deg);
-            background-color: #444;
-        }
-
-        .settings-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #fff;
-        }
-
-        /* Settings Modal */
-        .settings-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            z-index: 1001;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .settings-content {
-            background-color: #121212;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            padding: 20px;
-            position: relative;
-        }
-
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
-            cursor: pointer;
-            color: #aaa;
-        }
-
-        .close-button:hover {
-            color: #fff;
-        }
-
-        .settings-title {
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #333;
-        }
-
-        .settings-section {
-            margin-bottom: 20px;
-        }
-
-        .settings-section h3 {
-            margin-bottom: 10px;
-            color: #ddd;
-        }
-        
-        .filter-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .filter-option {
-            display: flex;
-            align-items: center;
-            background-color: #222;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .filter-option.active {
-            background-color: #4e4e9e;
-        }
-        
-        .filter-option input[type="checkbox"] {
-            margin-right: 8px;
-        }
-        
-        .filter-option label {
-            cursor: pointer;
-        }
-        
-        .show-all-button {
-            margin-top: 10px;
-            padding: 8px 15px;
-            background-color: #4e4e9e;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        
-        .show-all-button:hover {
-            background-color: #5c5cb6;
-        }
-
-        /* Sort Controls */
         .sort-controls {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
             gap: 10px;
         }
-        
+
         .sort-button {
             padding: 8px 15px;
             background-color: #222;
@@ -309,150 +198,118 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-        
+
         .sort-button:hover {
             background-color: #333;
         }
-        
+
         .sort-button.active {
             background-color: #4e4e9e;
         }
-        
+
         .date-added {
             font-size: 11px;
             color: #888;
             margin-left: 5px;
         }
-        /* Blinking Header Effect */
-.blinking-header {
-    font-size: 32px;
-    font-weight: bold;
-    position: relative;
-    letter-spacing: 0.05em;
-    margin-bottom: 30px;
-    display: inline-block;
-    transition: color 0.1s linear;
-}
 
-.blinking-header:hover {
-    animation: violent-blink 0.2s infinite;
-}
+        .blinking-header {
+            font-size: 32px;
+            font-weight: bold;
+            position: relative;
+            letter-spacing: 0.05em;
+            margin-bottom: 30px;
+            display: inline-block;
+            transition: color 0.1s linear;
+        }
 
-@keyframes violent-blink {
-    0% {
-        color: #ffffff;
-        text-shadow: 0 0 5px #ffffff;
-    }
-    25% {
-        color: #000000;
-        text-shadow: 0 0 5px #000000;
-    }
-    50% {
-        color: #0088ff;
-        text-shadow: 0 0 8px #0088ff;
-    }
-    75% {
-        color: #000000;
-        text-shadow: 0 0 5px #000000;
-    }
-    100% {
-        color: #ffffff;
-        text-shadow: 0 0 5px #ffffff;
-    }
-}
+        .blinking-header:hover {
+            animation: violent-blink 0.2s infinite;
+        }
 
-/* Adding a shake effect for more intensity */
-.blinking-header:hover {
-    animation: violent-blink 0.2s infinite, shake 0.1s infinite;
-}
+        @keyframes violent-blink {
+            0% {
+                color: #ffffff;
+                text-shadow: 0 0 5px #ffffff;
+            }
 
-@keyframes shake {
-    0% { transform: translate(0, 0); }
-    25% { transform: translate(-2px, 1px); }
-    50% { transform: translate(2px, -1px); }
-    75% { transform: translate(-1px, -1px); }
-    100% { transform: translate(0, 0); }
-}
+            25% {
+                color: #000000;
+                text-shadow: 0 0 5px #000000;
+            }
+
+            50% {
+                color: #0088ff;
+                text-shadow: 0 0 8px #0088ff;
+            }
+
+            75% {
+                color: #000000;
+                text-shadow: 0 0 5px #000000;
+            }
+
+            100% {
+                color: #ffffff;
+                text-shadow: 0 0 5px #ffffff;
+            }
+        }
+
+        .blinking-header:hover {
+            animation: violent-blink 0.2s infinite, shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(-2px, 1px);
+            }
+
+            50% {
+                transform: translate(2px, -1px);
+            }
+
+            75% {
+                transform: translate(-1px, -1px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <center><h1 class="blinking-header">Poxel Clan Board</h1></center>
-        
-        <!-- Sort Controls -->
+        <center>
+            <h1 class="blinking-header">Poxel Clan Board</h1>
+        </center>
+
         <div class="sort-controls">
             <button id="sortRecent" class="sort-button active">Most Recent</button>
             <button id="sortPopular" class="sort-button">Most Popular</button>
             <button id="sortAlphabetical" class="sort-button">Alphabetical</button>
         </div>
-        
-        <center><h2 class="featured-title">Trending Clans</h2></center>
-        
+
+        <center>
+            <h2 class="featured-title">Trending Clans</h2>
+        </center>
+
         <div class="grid" id="clansGrid">
-            <!-- Cards will be generated by JavaScript -->
-        </div>
-    </div>
-
-    <!-- Settings Icon -->
-    <div class="settings-icon" id="settingsIcon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
-        </svg>
-    </div>
-
-    <!-- Settings Modal -->
-    <div class="settings-modal" id="settingsModal">
-        <div class="settings-content">
-            <span class="close-button" id="closeButton">&times;</span>
-            <h2 class="settings-title">Settings</h2>
-            
-            <!-- Filter Settings -->
-            <div class="settings-section">
-                <h3>Filter Clans</h3>
-                <div class="filter-options">
-                    <div class="filter-option">
-                        <input type="checkbox" id="openFilter" checked>
-                        <label for="openFilter">Open Clan</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="availableFilter" checked>
-                        <label for="availableFilter">Available for Requests</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="closedFilter" checked>
-                        <label for="closedFilter">Closed Clan</label>
-                    </div>
-                    <div class="filter-option">
-                        <input type="checkbox" id="newFilter" checked>
-                        <label for="newFilter">New Clans</label>
-                    </div>
-                </div>
-                <button class="show-all-button" id="showAllButton">Show All</button>
-            </div>
         </div>
     </div>
 
     <script>
-        // DOM Elements
-        const settingsIcon = document.getElementById('settingsIcon');
-        const settingsModal = document.getElementById('settingsModal');
-        const closeButton = document.getElementById('closeButton');
-        const openFilter = document.getElementById('openFilter');
-        const availableFilter = document.getElementById('availableFilter');
-        const closedFilter = document.getElementById('closedFilter');
-        const newFilter = document.getElementById('newFilter');
-        const showAllButton = document.getElementById('showAllButton');
         const clansGrid = document.getElementById('clansGrid');
-        
-        // Sort buttons
+
         const sortRecent = document.getElementById('sortRecent');
         const sortPopular = document.getElementById('sortPopular');
         const sortAlphabetical = document.getElementById('sortAlphabetical');
-        
-        // Clans data array with added dateAdded and popularity properties
-        const clans = [
-            {
+
+        const clans = [{
                 id: 1,
                 name: "MYTH",
                 logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png",
@@ -502,18 +359,16 @@
             },
         ];
 
-        // Function to determine if a clan is new (less than 7 days old)
         function isNewClan(dateAdded) {
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
             return dateAdded > oneWeekAgo;
         }
 
-        // Function to format date as relative time
         function formatRelativeDate(date) {
             const now = new Date();
             const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-            
+
             if (diffInDays === 0) {
                 return "Today";
             } else if (diffInDays === 1) {
@@ -525,7 +380,6 @@
             }
         }
 
-        // Function to get the appropriate status dot class based on clan status
         function getStatusDotClass(status) {
             if (status === "Open Clan") {
                 return "status-dot-open";
@@ -536,10 +390,9 @@
             }
         }
 
-        // Create clan card element
         function createClanCard(clan) {
             const isNew = isNewClan(clan.dateAdded);
-            
+
             const card = document.createElement('div');
             card.className = 'card';
             card.setAttribute('data-status', clan.status);
@@ -547,7 +400,7 @@
             card.setAttribute('data-popularity', clan.popularity);
             card.setAttribute('data-name', clan.name);
             card.setAttribute('data-new', isNew);
-            
+
             let cardHTML = `
                 <a href="${clan.link}">
                     ${isNew ? '<div class="new-tag">NEW</div>' : ''}
@@ -570,18 +423,16 @@
                     </div>
                 </a>
             `;
-            
+
             card.innerHTML = cardHTML;
             return card;
         }
 
-        // Sort and render clans
         function renderClans(sortBy = 'recent') {
             clansGrid.innerHTML = '';
-            
+
             let sortedClans = [...clans];
-            
-            // Apply sorting
+
             if (sortBy === 'recent') {
                 sortedClans.sort((a, b) => b.dateAdded - a.dateAdded);
             } else if (sortBy === 'popular') {
@@ -589,137 +440,64 @@
             } else if (sortBy === 'alphabetical') {
                 sortedClans.sort((a, b) => a.name.localeCompare(b.name));
             }
-            
-            // Apply filters
-            const showOpen = openFilter.checked;
-            const showAvailable = availableFilter.checked;
-            const showClosed = closedFilter.checked;
-            const showNew = newFilter.checked;
-            
-            sortedClans = sortedClans.filter(clan => {
-                // Filter by status
-                if ((clan.status === 'Open Clan' && !showOpen) ||
-                    (clan.status === 'Available for Requests (Includes Requirements)' && !showAvailable) || 
-                    (clan.status === 'Closed Clan' && !showClosed)) {
-                    return false;
-                }
-                
-                // Filter by new status
-                if (isNewClan(clan.dateAdded) && !showNew) {
-                    return false;
-                }
-                
-                return true;
-            });
-            
-            // Render filtered and sorted clans
+
             sortedClans.forEach(clan => {
                 const card = createClanCard(clan);
                 clansGrid.appendChild(card);
             });
         }
 
-        // Initial render
         renderClans('recent');
 
-        // Disable right-click on the entire document
-        document.addEventListener('contextmenu', function(e) {
+        document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
             return false;
         });
 
-        // Disable keyboard shortcuts that might be used to view source
-        document.addEventListener('keydown', function(e) {
-            // Disable F12 key
-            if(e.keyCode == 123) {
+        document.addEventListener('keydown', function (e) {
+            if (e.keyCode == 123) {
                 e.preventDefault();
                 return false;
             }
-            
-            // Disable Ctrl+Shift+I (Chrome DevTools)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 73) {
+
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
                 e.preventDefault();
                 return false;
             }
-            
-            // Disable Ctrl+Shift+C (Chrome DevTools element inspection)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 67) {
+
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 67) {
                 e.preventDefault();
                 return false;
             }
-            
-            // Disable Ctrl+Shift+J (Chrome DevTools console)
-            if(e.ctrlKey && e.shiftKey && e.keyCode == 74) {
+
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
                 e.preventDefault();
                 return false;
             }
-            
-            // Disable Ctrl+U (View Source)
-            if(e.ctrlKey && e.keyCode == 85) {
+
+            if (e.ctrlKey && e.keyCode == 85) {
                 e.preventDefault();
                 return false;
             }
         });
 
-        // Open Settings Modal
-        settingsIcon.addEventListener('click', () => {
-            settingsModal.style.display = 'flex';
-        });
-
-        // Close Settings Modal
-        closeButton.addEventListener('click', () => {
-            settingsModal.style.display = 'none';
-        });
-
-        // Close Modal if clicked outside
-        window.addEventListener('click', (event) => {
-            if (event.target === settingsModal) {
-                settingsModal.style.display = 'none';
-            }
-        });
-
-        // Add event listeners for filters
-        openFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
-        availableFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
-        closedFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
-        newFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
-        
-        // Show all clans
-        showAllButton.addEventListener('click', () => {
-            openFilter.checked = true;
-            availableFilter.checked = true;
-            closedFilter.checked = true;
-            newFilter.checked = true;
-            renderClans(getCurrentSortMethod());
-        });
-        
-        // Get current sort method
-        function getCurrentSortMethod() {
-            if (sortRecent.classList.contains('active')) return 'recent';
-            if (sortPopular.classList.contains('active')) return 'popular';
-            if (sortAlphabetical.classList.contains('active')) return 'alphabetical';
-            return 'recent';
-        }
-        
-        // Set sort buttons active state
         function setActiveSortButton(button) {
             sortRecent.classList.remove('active');
             sortPopular.classList.remove('active');
             sortAlphabetical.classList.remove('active');
             button.classList.add('active');
         }
-        
-        // Sort button event listeners
+
         sortRecent.addEventListener('click', () => {
             setActiveSortButton(sortRecent);
             renderClans('recent');
         });
-        
+
         sortPopular.addEventListener('click', () => {
             setActiveSortButton(sortPopular);
             renderClans('popular');
         });
-        
+
         sortAlphabetical.addEventListener('click', () => {
             setActiveSortButton(sortAlphabetical);
             renderClans('alphabetical');
@@ -727,7 +505,6 @@
     </script>
 </body>
 
-<!-- Footer -->
 <footer class="footer">
     <div class="footer-content">
         <div class="footer-left">
@@ -735,7 +512,8 @@
         </div>
         <div class="footer-center">
             <div class="glowing-image-container">
-                <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png" alt="Powered by Logo" class="glowing-image">
+                <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png"
+                    alt="Powered by Logo" class="glowing-image">
             </div>
         </div>
         <div class="footer-right">
@@ -747,7 +525,7 @@
 
 <style>
     .footer {
-        position: fixed;
+        position: absolute;
         bottom: 0;
         width: 100%;
         background-color: #050513;
@@ -757,7 +535,7 @@
         display: flex;
         justify-content: center;
     }
-    
+
     .footer-content {
         display: flex;
         align-items: center;
@@ -765,26 +543,25 @@
         width: 80%;
         max-width: 1000px;
     }
-    
+
     .footer-left p {
         margin: 0;
         font-size: 1rem;
         color: #aaa;
     }
-    
-    /* Glowing image container and animation */
+
     .glowing-image-container {
         position: relative;
         display: inline-block;
     }
-    
+
     .glowing-image {
         height: 100px;
         width: auto;
         position: relative;
         z-index: 2;
     }
-    
+
     .glowing-image-container::after {
         content: '';
         position: absolute;
@@ -797,41 +574,43 @@
         z-index: 1;
         animation: pulseGlow 3s infinite ease-in-out;
     }
-    
+
     @keyframes pulseGlow {
         0% {
             opacity: 0.4;
             transform: scale(0.95);
         }
+
         50% {
             opacity: 0.8;
             transform: scale(1.05);
         }
+
         100% {
             opacity: 0.4;
             transform: scale(0.95);
         }
     }
-    
+
     .footer-right {
         text-align: right;
     }
-    
+
     .footer-right p {
         margin: 5px 0;
         font-size: 0.9rem;
         color: #aaa;
     }
-    
+
     .footer-right a {
         color: #00b7ff;
         text-decoration: none;
         transition: color 0.3s;
     }
-    
+
     .footer-right a:hover {
         color: white;
     }
-
 </style>
+
 </html>
