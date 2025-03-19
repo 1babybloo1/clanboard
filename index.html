@@ -133,18 +133,28 @@
             align-items: center;
         }
         
-        .status-dot {
+        /* Status Dot Colors */
+        .status-dot-open {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #4ecc93;
+            background-color: #4ecc93; /* Green for "Open Clan" */
             margin-right: 5px;
         }
-        .second-status-dot {
+        
+        .status-dot-requests {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #757575;
+            background-color: #ffbf00; /* Amber for "Available for Requests" */
+            margin-right: 5px;
+        }
+        
+        .status-dot-closed {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #757575; /* Gray for "Closed Clan" */
             margin-right: 5px;
         }
 
@@ -352,6 +362,10 @@
                 <h3>Filter Clans</h3>
                 <div class="filter-options">
                     <div class="filter-option">
+                        <input type="checkbox" id="openFilter" checked>
+                        <label for="openFilter">Open Clan</label>
+                    </div>
+                    <div class="filter-option">
                         <input type="checkbox" id="availableFilter" checked>
                         <label for="availableFilter">Available for Requests</label>
                     </div>
@@ -374,6 +388,7 @@
         const settingsIcon = document.getElementById('settingsIcon');
         const settingsModal = document.getElementById('settingsModal');
         const closeButton = document.getElementById('closeButton');
+        const openFilter = document.getElementById('openFilter');
         const availableFilter = document.getElementById('availableFilter');
         const closedFilter = document.getElementById('closedFilter');
         const newFilter = document.getElementById('newFilter');
@@ -428,14 +443,13 @@
                 name: "LOVE",
                 logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231812/image_2025-03-17_171650661_lpdtm0.png",
                 description: "An amazing clan made by the almighty Julink. This clan is a place to spread the love!",
-                status: "Available for Requests (Includes Requirements)",
+                status: "Open Clan",
                 link: "",
                 coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231805/image_2025-03-17_171643136_ker0vn.png",
                 dateAdded: new Date("2025-03-19"),
                 popularity: 175,
                 isNew: true
             },
-
         ];
 
         // Function to determine if a clan is new (less than 7 days old)
@@ -458,6 +472,17 @@
                 return `${diffInDays} days ago`;
             } else {
                 return `${date.toLocaleDateString()}`;
+            }
+        }
+
+        // Function to get the appropriate status dot class based on clan status
+        function getStatusDotClass(status) {
+            if (status === "Open Clan") {
+                return "status-dot-open";
+            } else if (status === "Available for Requests (Includes Requirements)") {
+                return "status-dot-requests";
+            } else {
+                return "status-dot-closed";
             }
         }
 
@@ -487,7 +512,7 @@
                         </div>
                         <div class="card-stats">
                             <div class="online-count">
-                                <div class="${clan.status === "Available for Requests (Includes Requirements)" ? "status-dot" : "second-status-dot"}"></div>
+                                <div class="${getStatusDotClass(clan.status)}"></div>
                                 ${clan.status}
                             </div>
                             <div class="date-added">Added: ${formatRelativeDate(clan.dateAdded)}</div>
@@ -516,13 +541,15 @@
             }
             
             // Apply filters
+            const showOpen = openFilter.checked;
             const showAvailable = availableFilter.checked;
             const showClosed = closedFilter.checked;
             const showNew = newFilter.checked;
             
             sortedClans = sortedClans.filter(clan => {
                 // Filter by status
-                if ((clan.status === 'Available for Requests (Includes Requirements)' && !showAvailable) || 
+                if ((clan.status === 'Open Clan' && !showOpen) ||
+                    (clan.status === 'Available for Requests (Includes Requirements)' && !showAvailable) || 
                     (clan.status === 'Closed Clan' && !showClosed)) {
                     return false;
                 }
@@ -602,12 +629,14 @@
         });
 
         // Add event listeners for filters
+        openFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
         availableFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
         closedFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
         newFilter.addEventListener('change', () => renderClans(getCurrentSortMethod()));
         
         // Show all clans
         showAllButton.addEventListener('click', () => {
+            openFilter.checked = true;
             availableFilter.checked = true;
             closedFilter.checked = true;
             newFilter.checked = true;
