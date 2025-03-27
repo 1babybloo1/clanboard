@@ -182,31 +182,6 @@
             z-index: 2;
         }
 
-        .sort-controls {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
-            gap: 10px;
-        }
-
-        .sort-button {
-            padding: 8px 15px;
-            background-color: #222;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .sort-button:hover {
-            background-color: #333;
-        }
-
-        .sort-button.active {
-            background-color: #4e4e9e;
-        }
-
         .date-added {
             font-size: 11px;
             color: #888;
@@ -279,6 +254,36 @@
                 transform: translate(0, 0);
             }
         }
+
+        /* Styles for the search bar */
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .search-input {
+            padding: 10px 20px;
+            border: 2px solid #4e4e9e;
+            border-radius: 25px;
+            background-color: #111;
+            color: #fff;
+            font-size: 16px;
+            width: 50%;
+            min-width: 200px;
+            max-width: 600px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #ffffff;
+            box-shadow: 0 0 5px rgba(78, 78, 158, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
     </style>
 </head>
 
@@ -288,10 +293,9 @@
             <h1 class="blinking-header">Poxel Clan Board</h1>
         </center>
 
-        <div class="sort-controls">
-            <button id="sortRecent" class="sort-button active">Most Recent</button>
-            <button id="sortPopular" class="sort-button">Most Popular</button>
-            <button id="sortAlphabetical" class="sort-button">Alphabetical</button>
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="Search for a clan...">
         </div>
 
         <center>
@@ -304,10 +308,7 @@
 
     <script>
         const clansGrid = document.getElementById('clansGrid');
-
-        const sortRecent = document.getElementById('sortRecent');
-        const sortPopular = document.getElementById('sortPopular');
-        const sortAlphabetical = document.getElementById('sortAlphabetical');
+        const searchInput = document.getElementById('searchInput');
 
         const clans = [{
                 id: 1,
@@ -318,7 +319,6 @@
                 link: "https://discord.gg/wMAbVAKFnT",
                 coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png",
                 dateAdded: new Date("2025-03-13"),
-                popularity: 10000,
                 isNew: false
             },
             {
@@ -330,7 +330,6 @@
                 link: "",
                 coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231805/image_2025-03-17_171643136_ker0vn.png",
                 dateAdded: new Date("2025-03-15"),
-                popularity: 100,
                 isNew: false
             },
             {
@@ -342,7 +341,6 @@
                 link: "https://discord.gg/7NH6t4NXJN",
                 coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png",
                 dateAdded: new Date("2025-03-16"),
-                popularity: 90,
                 isNew: true
             },
             {
@@ -354,7 +352,6 @@
                 link: "",
                 coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742403303/image_2025-03-19_165500845_lnxxha.png",
                 dateAdded: new Date("2025-03-19"),
-                popularity: 175,
                 isNew: true
             },
         ];
@@ -397,8 +394,6 @@
             card.className = 'card';
             card.setAttribute('data-status', clan.status);
             card.setAttribute('data-date', clan.dateAdded.getTime());
-            card.setAttribute('data-popularity', clan.popularity);
-            card.setAttribute('data-name', clan.name);
             card.setAttribute('data-new', isNew);
 
             let cardHTML = `
@@ -428,26 +423,25 @@
             return card;
         }
 
-        function renderClans(sortBy = 'recent') {
+        function renderClans(searchTerm = '') {
             clansGrid.innerHTML = '';
 
-            let sortedClans = [...clans];
+            const filteredClans = clans.filter(clan =>
+                clan.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                clan.description.toLowerCase().includes(searchTerm.toLowerCase())
+            );
 
-            if (sortBy === 'recent') {
-                sortedClans.sort((a, b) => b.dateAdded - a.dateAdded);
-            } else if (sortBy === 'popular') {
-                sortedClans.sort((a, b) => b.popularity - a.popularity);
-            } else if (sortBy === 'alphabetical') {
-                sortedClans.sort((a, b) => a.name.localeCompare(b.name));
-            }
-
-            sortedClans.forEach(clan => {
+            filteredClans.forEach(clan => {
                 const card = createClanCard(clan);
                 clansGrid.appendChild(card);
             });
         }
 
-        renderClans('recent');
+        renderClans();
+
+        searchInput.addEventListener('input', () => {
+            renderClans(searchInput.value);
+        });
 
         document.addEventListener('contextmenu', function (e) {
             e.preventDefault();
@@ -480,137 +474,114 @@
                 return false;
             }
         });
-
-        function setActiveSortButton(button) {
-            sortRecent.classList.remove('active');
-            sortPopular.classList.remove('active');
-            sortAlphabetical.classList.remove('active');
-            button.classList.add('active');
-        }
-
-        sortRecent.addEventListener('click', () => {
-            setActiveSortButton(sortRecent);
-            renderClans('recent');
-        });
-
-        sortPopular.addEventListener('click', () => {
-            setActiveSortButton(sortPopular);
-            renderClans('popular');
-        });
-
-        sortAlphabetical.addEventListener('click', () => {
-            setActiveSortButton(sortAlphabetical);
-            renderClans('alphabetical');
-        });
     </script>
-</body>
-
-<footer class="footer">
-    <div class="footer-content">
-        <div class="footer-left">
-            <p>Powered by</p>
-        </div>
-        <div class="footer-center">
-            <div class="glowing-image-container">
-                <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png"
-                    alt="Powered by Logo" class="glowing-image">
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <p>Powered by</p>
+            </div>
+            <div class="footer-center">
+                <div class="glowing-image-container">
+                    <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png"
+                        alt="Powered by Logo" class="glowing-image">
+                </div>
+            </div>
+            <div class="footer-right">
+                <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
+                <p>WEBSITE MADE BY BABYBLOO </p>
             </div>
         </div>
-        <div class="footer-right">
-            <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
-            <p>WEBSITE MADE BY BABYBLOO </p>
-        </div>
-    </div>
-</footer>
+    </footer>
 
-<style>
-    .footer {
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        background-color: #050513;
-        border-top: 2px solid #2a2aaf;
-        padding: 15px 0;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-    }
-
-    .footer-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 80%;
-        max-width: 1000px;
-    }
-
-    .footer-left p {
-        margin: 0;
-        font-size: 1rem;
-        color: #aaa;
-    }
-
-    .glowing-image-container {
-        position: relative;
-        display: inline-block;
-    }
-
-    .glowing-image {
-        height: 100px;
-        width: auto;
-        position: relative;
-        z-index: 2;
-    }
-
-    .glowing-image-container::after {
-        content: '';
-        position: absolute;
-        top: -10px;
-        left: -10px;
-        right: -10px;
-        bottom: -10px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(78, 78, 158, 0.8) 0%, rgba(78, 78, 158, 0) 70%);
-        z-index: 1;
-        animation: pulseGlow 3s infinite ease-in-out;
-    }
-
-    @keyframes pulseGlow {
-        0% {
-            opacity: 0.4;
-            transform: scale(0.95);
+    <style>
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #050513;
+            border-top: 2px solid #2a2aaf;
+            padding: 15px 0;
+            text-align: center;
+            display: flex;
+            justify-content: center;
         }
 
-        50% {
-            opacity: 0.8;
-            transform: scale(1.05);
+        .footer-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 80%;
+            max-width: 1000px;
         }
 
-        100% {
-            opacity: 0.4;
-            transform: scale(0.95);
+        .footer-left p {
+            margin: 0;
+            font-size: 1rem;
+            color: #aaa;
         }
-    }
 
-    .footer-right {
-        text-align: right;
-    }
+        .glowing-image-container {
+            position: relative;
+            display: inline-block;
+        }
 
-    .footer-right p {
-        margin: 5px 0;
-        font-size: 0.9rem;
-        color: #aaa;
-    }
+        .glowing-image {
+            height: 100px;
+            width: auto;
+            position: relative;
+            z-index: 2;
+        }
 
-    .footer-right a {
-        color: #00b7ff;
-        text-decoration: none;
-        transition: color 0.3s;
-    }
+        .glowing-image-container::after {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            bottom: -10px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(78, 78, 158, 0.8) 0%, rgba(78, 78, 158, 0) 70%);
+            z-index: 1;
+            animation: pulseGlow 3s infinite ease-in-out;
+        }
 
-    .footer-right a:hover {
-        color: white;
-    }
-</style>
+        @keyframes pulseGlow {
+            0% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(0.95);
+            }
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-right p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .footer-right a {
+            color: #00b7ff;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-right a:hover {
+            color: white;
+        }
+    </style>
+</body>
 
 </html>
