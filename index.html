@@ -5,15 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poxel Clan Board</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #a855f7;
+            --dark-bg: #0f172a;
+            --darker-bg: #0c1222;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray: #64748b;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
             min-height: 100vh;
             position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         body::before {
@@ -25,119 +49,172 @@
             height: 100%;
             background: url('https://res.cloudinary.com/djttn4xvk/image/upload/v1742233490/image_2025-03-17_174448412_z7zjdy.png') no-repeat center center;
             background-size: cover;
-            opacity: 0.1;
+            opacity: 0.03;
             z-index: -1;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
-            padding: 20px;
-            padding-bottom: 300px;
+            padding: 2rem;
+            flex: 1;
         }
 
-        h1 {
-            font-size: 32px;
-            margin-bottom: 30px;
+        header {
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .site-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .site-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            border-radius: 2px;
         }
 
         .featured-title {
-            font-size: 24px;
-            margin-bottom: 20px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .search-input {
+            padding: 1rem 1.5rem 1rem 3rem;
+            border: 2px solid rgba(99, 102, 241, 0.2);
+            border-radius: 9999px;
+            background-color: rgba(15, 23, 42, 0.7);
+            color: var(--text-primary);
+            font-size: 1rem;
+            width: 100%;
+            max-width: 500px;
+            outline: none;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: calc(50% - 230px);
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
         }
 
         .grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        @media (max-width: 1100px) {
-            .grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 700px) {
-            .grid {
-                grid-template-columns: 1fr;
-            }
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
         }
 
         .card {
-            background-color: #050513;
-            border-radius: 8px;
+            background-color: var(--card-bg);
+            border-radius: 1rem;
             overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease,
-                border-color 0.3s ease;
-            border: 1px solid transparent;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
-        }
-
-        @keyframes glowPulse {
-            0% {
-                box-shadow: 0 0 5px rgba(78, 78, 158, 0.3);
-            }
-
-            50% {
-                box-shadow: 0 0 20px rgba(78, 78, 158, 0.7);
-            }
-
-            100% {
-                box-shadow: 0 0 5px rgba(78, 78, 158, 0.3);
-            }
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 0 0 2px #4e4e9e;
-            border-color: #ffffff;
-            animation: glowPulse 2s infinite ease-in-out;
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4), 0 8px 10px -6px rgba(99, 102, 241, 0.3);
         }
 
         .card a {
             text-decoration: none;
             color: inherit;
+            display: block;
         }
 
         .card-image {
             width: 100%;
             height: 180px;
             object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .card:hover .card-image {
+            transform: scale(1.05);
         }
 
         .card-content {
-            padding: 15px;
+            padding: 1.5rem;
         }
 
         .card-title {
             display: flex;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
         }
 
         .card-title img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
+            width: 28px;
+            height: 28px;
+            margin-right: 0.75rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
         }
 
         .card-title h3 {
-            color: #ffffff;
+            color: var(--text-primary);
             margin: 0;
+            font-size: 1.25rem;
+            font-weight: 600;
         }
 
         .card-description {
-            font-size: 14px;
-            color: #cccccc;
-            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
         }
 
         .card-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: #aaaaaa;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 1rem;
         }
 
         .online-count {
@@ -149,162 +226,228 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #4ecc93;
-            margin-right: 5px;
+            background-color: var(--success);
+            margin-right: 0.5rem;
+            position: relative;
+        }
+
+        .status-dot-open::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            background-color: var(--success);
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
+            50% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.3;
+            }
         }
 
         .status-dot-requests {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #ffbf00;
-            margin-right: 5px;
+            background-color: var(--warning);
+            margin-right: 0.5rem;
         }
 
         .status-dot-closed {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: #757575;
-            margin-right: 5px;
+            background-color: var(--gray);
+            margin-right: 0.5rem;
         }
 
         .new-tag {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: #ff3860;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: bold;
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             z-index: 2;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .date-added {
-            font-size: 11px;
-            color: #888;
-            margin-left: 5px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
         }
 
-        .blinking-header {
-            font-size: 32px;
-            font-weight: bold;
-            position: relative;
-            letter-spacing: 0.05em;
-            margin-bottom: 30px;
-            display: inline-block;
-            transition: color 0.1s linear;
+        .footer {
+            background-color: var(--darker-bg);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
         }
 
-        .blinking-header:hover {
-            animation: violent-blink 0.2s infinite;
-        }
-
-        @keyframes violent-blink {
-            0% {
-                color: #ffffff;
-                text-shadow: 0 0 5px #ffffff;
-            }
-
-            25% {
-                color: #000000;
-                text-shadow: 0 0 5px #000000;
-            }
-
-            50% {
-                color: #0088ff;
-                text-shadow: 0 0 8px #0088ff;
-            }
-
-            75% {
-                color: #000000;
-                text-shadow: 0 0 5px #000000;
-            }
-
-            100% {
-                color: #ffffff;
-                text-shadow: 0 0 5px #ffffff;
-            }
-        }
-
-        .blinking-header:hover {
-            animation: violent-blink 0.2s infinite, shake 0.1s infinite;
-        }
-
-        @keyframes shake {
-            0% {
-                transform: translate(0, 0);
-            }
-
-            25% {
-                transform: translate(-2px, 1px);
-            }
-
-            50% {
-                transform: translate(2px, -1px);
-            }
-
-            75% {
-                transform: translate(-1px, -1px);
-            }
-
-            100% {
-                transform: translate(0, 0);
-            }
-        }
-
-        /* Styles for the search bar */
-        .search-container {
+        .footer-content {
             display: flex;
-            justify-content: center;
-            margin-bottom: 20px;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
         }
 
-        .search-input {
-            padding: 10px 20px;
-            border: 2px solid #4e4e9e;
-            border-radius: 25px;
-            background-color: #111;
-            color: #fff;
-            font-size: 16px;
-            width: 50%;
-            min-width: 200px;
-            max-width: 600px;
-            outline: none;
-            transition: border-color 0.3s ease;
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            
+            .footer-right {
+                text-align: center !important;
+            }
         }
 
-        .search-input:focus {
-            border-color: #ffffff;
-            box-shadow: 0 0 5px rgba(78, 78, 158, 0.5);
+        .footer-left p {
+            margin: 0;
+            font-size: 1rem;
+            color: var(--text-muted);
         }
 
-        .search-input::placeholder {
-            color: #aaa;
+        .glowing-image-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .glowing-image {
+            height: 80px;
+            width: auto;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
+        }
+
+        .footer-right {
+            text-align: right;
+        }
+
+        .footer-right p {
+            margin: 5px 0;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .empty-results {
+            text-align: center;
+            grid-column: 1 / -1;
+            padding: 4rem 0;
+            color: var(--text-muted);
+        }
+
+        .empty-results i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-results p {
+            font-size: 1.25rem;
+        }
+
+        /* Button styling for empty links */
+        .card a.no-link {
+            cursor: default;
+        }
+
+        .join-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.25rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .join-button:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .join-button i {
+            margin-left: 0.5rem;
+        }
+
+        .closed-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1.25rem;
+            background-color: var(--gray);
+            color: white;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <center>
-            <h1 class="blinking-header">Poxel Clan Board</h1>
-        </center>
+        <header>
+            <h1 class="site-title">Poxel Clan Board</h1>
+        </header>
 
         <!-- Search Bar -->
         <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="Search for a clan...">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" id="searchInput" class="search-input" placeholder="Search for a clan by name or description...">
         </div>
 
-        <center>
-            <h2 class="featured-title">Trending Clans</h2>
-        </center>
+        <h2 class="featured-title">Trending Clans</h2>
 
         <div class="grid" id="clansGrid">
+            <!-- Clan cards will be dynamically inserted here -->
         </div>
     </div>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-left">
+                <p>Powered by</p>
+            </div>
+            <div class="footer-center">
+                <div class="glowing-image-container">
+                    <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png"
+                        alt="Powered by Logo" class="glowing-image">
+                </div>
+            </div>
+            <div class="footer-right">
+                <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
+                <p>WEBSITE MADE BY BABYBLOO </p>
+            </div>
+        </div>
+    </footer>
 
     <script>
         const clansGrid = document.getElementById('clansGrid');
@@ -387,8 +530,19 @@
             }
         }
 
+        function getButtonHTML(clan) {
+            if (clan.status === "Closed Clan") {
+                return `<div class="closed-button">Closed <i class="fas fa-lock"></i></div>`;
+            } else if (clan.link) {
+                return `<div class="join-button">Join Now <i class="fas fa-arrow-right"></i></div>`;
+            } else {
+                return '';
+            }
+        }
+
         function createClanCard(clan) {
             const isNew = isNewClan(clan.dateAdded);
+            const hasLink = clan.link && clan.link.trim() !== '';
 
             const card = document.createElement('div');
             card.className = 'card';
@@ -397,17 +551,18 @@
             card.setAttribute('data-new', isNew);
 
             let cardHTML = `
-                <a href="${clan.link}">
+                <a href="${hasLink ? clan.link : '#'}" ${!hasLink ? 'class="no-link"' : ''} ${!hasLink ? 'onclick="event.preventDefault()"' : ''}>
                     ${isNew ? '<div class="new-tag">NEW</div>' : ''}
                     <img class="card-image" src="${clan.coverImage}" alt="${clan.name}">
                     <div class="card-content">
                         <div class="card-title">
-                            <img src="${clan.logo}" alt="Icon">
+                            <img src="${clan.logo}" alt="${clan.name} logo">
                             <h3>${clan.name}</h3>
                         </div>
                         <div class="card-description">
                             ${clan.description}
                         </div>
+                        ${getButtonHTML(clan)}
                         <div class="card-stats">
                             <div class="online-count">
                                 <div class="${getStatusDotClass(clan.status)}"></div>
@@ -431,6 +586,17 @@
                 clan.description.toLowerCase().includes(searchTerm.toLowerCase())
             );
 
+            if (filteredClans.length === 0) {
+                const emptyMessage = document.createElement('div');
+                emptyMessage.className = 'empty-results';
+                emptyMessage.innerHTML = `
+                    <i class="fas fa-search"></i>
+                    <p>No clans match your search</p>
+                `;
+                clansGrid.appendChild(emptyMessage);
+                return;
+            }
+
             filteredClans.forEach(clan => {
                 const card = createClanCard(clan);
                 clansGrid.appendChild(card);
@@ -442,146 +608,7 @@
         searchInput.addEventListener('input', () => {
             renderClans(searchInput.value);
         });
-
-        document.addEventListener('contextmenu', function (e) {
-            e.preventDefault();
-            return false;
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.keyCode == 123) {
-                e.preventDefault();
-                return false;
-            }
-
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 73) {
-                e.preventDefault();
-                return false;
-            }
-
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 67) {
-                e.preventDefault();
-                return false;
-            }
-
-            if (e.ctrlKey && e.shiftKey && e.keyCode == 74) {
-                e.preventDefault();
-                return false;
-            }
-
-            if (e.ctrlKey && e.keyCode == 85) {
-                e.preventDefault();
-                return false;
-            }
-        });
     </script>
-    <footer class="footer">
-        <div class="footer-content">
-            <div class="footer-left">
-                <p>Powered by</p>
-            </div>
-            <div class="footer-center">
-                <div class="glowing-image-container">
-                    <img src="https://res.cloudinary.com/djttn4xvk/image/upload/v1742231704/image_2025-03-17_171503090_xlt1qv.png"
-                        alt="Powered by Logo" class="glowing-image">
-                </div>
-            </div>
-            <div class="footer-right">
-                <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
-                <p>WEBSITE MADE BY BABYBLOO </p>
-            </div>
-        </div>
-    </footer>
-
-    <style>
-        .footer {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            background-color: #050513;
-            border-top: 2px solid #2a2aaf;
-            padding: 15px 0;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-        }
-
-        .footer-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            width: 80%;
-            max-width: 1000px;
-        }
-
-        .footer-left p {
-            margin: 0;
-            font-size: 1rem;
-            color: #aaa;
-        }
-
-        .glowing-image-container {
-            position: relative;
-            display: inline-block;
-        }
-
-        .glowing-image {
-            height: 100px;
-            width: auto;
-            position: relative;
-            z-index: 2;
-        }
-
-        .glowing-image-container::after {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: -10px;
-            right: -10px;
-            bottom: -10px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(78, 78, 158, 0.8) 0%, rgba(78, 78, 158, 0) 70%);
-            z-index: 1;
-            animation: pulseGlow 3s infinite ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0% {
-                opacity: 0.4;
-                transform: scale(0.95);
-            }
-
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05);
-            }
-
-            100% {
-                opacity: 0.4;
-                transform: scale(0.95);
-            }
-        }
-
-        .footer-right {
-            text-align: right;
-        }
-
-        .footer-right p {
-            margin: 5px 0;
-            font-size: 0.9rem;
-            color: #aaa;
-        }
-
-        .footer-right a {
-            color: #00b7ff;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer-right a:hover {
-            color: white;
-        }
-    </style>
 </body>
 
 </html>
