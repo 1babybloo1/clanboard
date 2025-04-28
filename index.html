@@ -58,6 +58,45 @@
             margin: 0 auto;
             padding: 2rem;
             flex: 1;
+            padding-top: 5rem; /* Added padding to prevent overlap with auth buttons */
+        }
+
+        /* Style for Auth Button Container */
+        .auth-container {
+            position: absolute;
+            top: 1rem;
+            right: 2rem;
+            z-index: 10;
+            display: flex; /* Use flexbox for alignment */
+            gap: 0.5rem; /* Space between buttons */
+        }
+
+        .auth-button {
+            padding: 0.6rem 1.2rem;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            /* margin-left: 0.5rem; Remove margin if using gap */
+        }
+
+        .auth-button:hover {
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4), 0 4px 6px -2px rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .logout-button {
+             background: var(--gray);
+        }
+        .logout-button:hover {
+             background: #718096; /* Slightly darker gray */
+             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+             transform: translateY(0);
         }
 
         header {
@@ -121,12 +160,19 @@
 
         .search-icon {
             position: absolute;
-            left: calc(50% - 230px);
+            left: calc(50% - 230px); /* Adjust if max-width changes */
             top: 50%;
             transform: translateY(-50%);
             color: var(--primary-color);
             font-size: 1rem;
+            pointer-events: none; /* Prevent icon from blocking input */
         }
+         @media (max-width: 600px) {
+            .search-icon {
+                 left: 1.5rem; /* Adjust for smaller screens */
+             }
+         }
+
 
         .search-input:focus {
             border-color: var(--primary-color);
@@ -151,6 +197,8 @@
             border: 1px solid rgba(255, 255, 255, 0.05);
             position: relative;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            display: flex; /* Use flexbox for consistent height */
+            flex-direction: column;
         }
 
         .card:hover {
@@ -158,25 +206,42 @@
             box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4), 0 8px 10px -6px rgba(99, 102, 241, 0.3);
         }
 
-        .card a {
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
+        /* Make the whole card an outer container, but the link applies only if present */
+         .card a.card-link-wrapper {
+             text-decoration: none;
+             color: inherit;
+             display: flex;
+             flex-direction: column;
+             flex-grow: 1; /* Allow link to fill card */
+         }
+         /* If card has no link, direct children handle layout */
+         .card > *:not(a.card-link-wrapper) {
+             /* Style direct children if card isn't wrapped in <a> */
+         }
+
 
         .card-image {
             width: 100%;
             height: 180px;
             object-fit: cover;
             transition: transform 0.5s ease;
+            display: block; /* Remove extra space below image */
         }
 
-        .card:hover .card-image {
+        .card a.card-link-wrapper:hover .card-image {
             transform: scale(1.05);
         }
+        /* Apply hover effect directly to card if no link */
+         .card:hover .card-image {
+             transform: scale(1.05);
+         }
+
 
         .card-content {
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1; /* Allow content to take remaining space */
         }
 
         .card-title {
@@ -199,6 +264,7 @@
             margin: 0;
             font-size: 1.25rem;
             font-weight: 600;
+            word-break: break-word; /* Prevent long names overflowing */
         }
 
         .card-description {
@@ -206,15 +272,23 @@
             color: var(--text-secondary);
             margin-bottom: 1.5rem;
             line-height: 1.5;
+            flex-grow: 1; /* Push stats to bottom */
+        }
+
+        .card-buttons {
+            margin-top: auto; /* Push button above stats */
+             margin-bottom: 1.5rem; /* Space between button and stats */
         }
 
         .card-stats {
             display: flex;
             justify-content: space-between;
+            align-items: center; /* Align items vertically */
             font-size: 0.85rem;
             color: var(--text-muted);
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             padding-top: 1rem;
+            margin-top: auto; /* Push stats to the bottom */
         }
 
         .online-count {
@@ -222,57 +296,49 @@
             align-items: center;
         }
 
-        .status-dot-open {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--success);
-            margin-right: 0.5rem;
-            position: relative;
-        }
-
-        .status-dot-open::after {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 50%;
-            background-color: var(--success);
-            opacity: 0.3;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-            50% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0.3;
-            }
-        }
-
-        .status-dot-requests {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--warning);
-            margin-right: 0.5rem;
-        }
-
+        .status-dot-open,
+        .status-dot-requests,
         .status-dot-closed {
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background-color: var(--gray);
             margin-right: 0.5rem;
+            flex-shrink: 0; /* Prevent dot from shrinking */
+        }
+
+        .status-dot-open { background-color: var(--success); position: relative; }
+        .status-dot-requests { background-color: var(--warning); }
+        .status-dot-closed { background-color: var(--gray); }
+
+
+        .status-dot-open::after {
+            content: '';
+            position: absolute;
+            top: 50%; /* Center relative to dot */
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background-color: var(--success);
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+            transform: translate(-50%, -50%) scale(1); /* Center and initial scale */
+            z-index: -1; /* Behind the dot */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.4;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(2.5);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
         }
 
         .new-tag {
@@ -294,6 +360,8 @@
         .date-added {
             font-size: 0.85rem;
             color: var(--text-muted);
+            white-space: nowrap; /* Prevent date wrapping */
+            margin-left: 0.5rem; /* Add space if status text wraps */
         }
 
         .footer {
@@ -311,16 +379,20 @@
             max-width: 1280px;
             margin: 0 auto;
             padding: 0 2rem;
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+            gap: 1.5rem; /* Add gap for wrapping */
         }
 
         @media (max-width: 768px) {
             .footer-content {
                 flex-direction: column;
                 gap: 1.5rem;
+                text-align: center; /* Center all items */
             }
-            
-            .footer-right {
-                text-align: center !important;
+
+            .footer-left, .footer-center, .footer-right {
+                text-align: center !important; /* Ensure centering */
+                width: 100%; /* Take full width */
             }
         }
 
@@ -343,10 +415,6 @@
             filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.6));
         }
 
-        .footer-right {
-            text-align: right;
-        }
-
         .footer-right p {
             margin: 5px 0;
             font-size: 0.9rem;
@@ -355,7 +423,7 @@
 
         .empty-results {
             text-align: center;
-            grid-column: 1 / -1;
+            grid-column: 1 / -1; /* Span full grid width */
             padding: 4rem 0;
             color: var(--text-muted);
         }
@@ -370,14 +438,14 @@
             font-size: 1.25rem;
         }
 
-        /* Button styling for empty links */
-        .card a.no-link {
+        /* Button styling for cards */
+         .card a.no-link { /* Style specifically for cards with no external link */
             cursor: default;
-        }
+         }
 
         .join-button {
             display: inline-block;
-            margin-top: 1rem;
+            /* margin-top: 1rem; Removed, handled by .card-buttons */
             padding: 0.5rem 1.25rem;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: white;
@@ -386,11 +454,13 @@
             font-weight: 500;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+             text-decoration: none; /* Ensure link styles are correct */
         }
 
         .join-button:hover {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transform: translateY(-2px);
+            color: white; /* Maintain text color on hover */
         }
 
         .join-button i {
@@ -399,7 +469,7 @@
 
         .closed-button {
             display: inline-block;
-            margin-top: 1rem;
+             /* margin-top: 1rem; Removed */
             padding: 0.5rem 1.25rem;
             background-color: var(--gray);
             color: white;
@@ -409,10 +479,160 @@
             cursor: not-allowed;
             opacity: 0.7;
         }
+        .closed-button i {
+             margin-left: 0.5rem;
+        }
+
+        /* Basic Modal Styles */
+        .modal {
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; /* Hidden by default, shown by JS */
+            align-items: center; /* Vertical center */
+            justify-content: center; /* Horizontal center */
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: auto;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 90%;
+            max-width: 450px;
+            border-radius: 1rem;
+            position: relative;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+            color: var(--text-primary);
+        }
+
+        .close-button {
+            color: var(--text-muted);
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            line-height: 1; /* Ensure consistent positioning */
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: var(--text-primary);
+            text-decoration: none;
+        }
+
+        /* Tab Styles */
+        #authTabs {
+            overflow: hidden;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            display: flex; /* Use flexbox for tabs */
+        }
+
+        #authTabs button {
+            background-color: inherit;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            flex-grow: 1; /* Make tabs share space */
+             text-align: center;
+             border-bottom: 3px solid transparent; /* Placeholder for active border */
+             margin-bottom: -1px; /* Align border */
+        }
+
+        #authTabs button:hover {
+            color: var(--primary-color);
+        }
+
+        #authTabs button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+
+        .tab-content {
+            display: none; /* Hidden by default */
+            padding: 10px 0;
+        }
+        .tab-content.active { /* Use class to show active tab */
+             display: block;
+        }
+
+         .tab-content h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-primary);
+         }
+
+        /* Form Styles */
+        #loginForm input, #signupForm input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 15px;
+            display: inline-block;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(15, 23, 42, 0.8); /* Slightly transparent dark */
+            box-sizing: border-box;
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        #loginForm input:focus, #signupForm input:focus {
+             outline: none;
+             border-color: var(--primary-color);
+             box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+        }
+
+        #loginForm button, #signupForm button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+            margin-top: 0.5rem; /* Add some space above button */
+        }
+
+        #loginForm button:hover, #signupForm button:hover {
+            opacity: 0.9;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 10px;
+            text-align: center;
+            min-height: 1.2em; /* Reserve space */
+        }
+
     </style>
 </head>
 
 <body>
+    <!-- Authentication Buttons Area -->
+    <div class="auth-container">
+        <button id="authButton" class="auth-button">Add Your Clan</button>
+        <button id="logoutButton" class="auth-button logout-button" style="display: none;">Logout</button>
+    </div>
+
     <div class="container">
         <header>
             <h1 class="site-title">Poxel Clan Board</h1>
@@ -424,13 +644,52 @@
             <input type="text" id="searchInput" class="search-input" placeholder="Search for a clan by name or description...">
         </div>
 
-        <h2 class="featured-title">Trending Clans</h2>
+        <h2 class="featured-title">Featured Clans</h2>
 
+        <!-- Clan Grid -->
         <div class="grid" id="clansGrid">
-            <!-- Clan cards will be dynamically inserted here -->
+            <!-- Clan cards will be dynamically inserted here by main.js -->
+            <!-- Initial loading message (optional) -->
+            <p style="text-align: center; grid-column: 1 / -1; color: var(--text-muted);">Loading clans...</p>
         </div>
     </div>
 
+    <!-- Authentication Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeAuthModal()">×</span>
+            <div id="authTabs">
+                <!-- Ensure onclick calls functions defined in auth.js -->
+                <button class="tab-link active" onclick="openTab(event, 'login')">Login</button>
+                <button class="tab-link" onclick="openTab(event, 'signup')">Sign Up</button>
+            </div>
+
+            <!-- Login Form -->
+            <div id="login" class="tab-content active"> <!-- Add 'active' class to default tab -->
+                <h2>Login</h2>
+                <form id="loginForm">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                    <p id="loginError" class="error-message"></p>
+                </form>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup" class="tab-content">
+                <h2>Sign Up</h2>
+                <form id="signupForm">
+                    <input type="email" id="signupEmail" placeholder="Email" required>
+                    <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" required>
+                    <button type="submit">Sign Up</button>
+                    <p id="signupError" class="error-message"></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-left">
@@ -443,238 +702,25 @@
                 </div>
             </div>
             <div class="footer-right">
-                <p>Copyright &copy; babybloo 2024. All rights reserved.</p>
+                <p>Copyright © babybloo 2024. All rights reserved.</p>
                 <p>WEBSITE MADE BY BABYBLOO </p>
             </div>
         </div>
     </footer>
 
-    <script>
-        const clansGrid = document.getElementById('clansGrid');
-        const searchInput = document.getElementById('searchInput');
+    <!-- Firebase App (the core Firebase SDK) - USE VERSION 8 FOR COMPATIBILITY WITH PROVIDED CODE -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <!-- Add the Firebase products you want to use -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
-        const clans = [{
-                id: 1,
-                name: "MYTH",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744798245/image_1_gthnh9.png",
-                description: "Myth is the one of the most prestigious and innovative clans out there. Myth is certainly a great pick to join! Master your talent and climb your way to the top of the leaderboard! MYTH ON TOP!",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/4CWsuHdgzN",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744798245/image_1_gthnh9.png",
-                dateAdded: new Date("2025-03-13"),
-                isNew: false
-            },
-            {
-                id: 2,
-                name: "SSL",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231812/image_2025-03-17_171650661_lpdtm0.png",
-                description: "An original clan made by Ssslick back in the good ol' days! This clan is for developers and top tier goats!",
-                status: "Closed Clan",
-                link: "",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231805/image_2025-03-17_171643136_ker0vn.png",
-                dateAdded: new Date("2025-03-15"),
-                isNew: false
-            },
-            {
-                id: 3,
-                name: "ONI",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png",
-                description: "Another great clan! Take this place as an opportunity to thrive, master your skill in Poxel!",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/7NH6t4NXJN",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231865/image_2025-03-17_171737081_gfamhp.png",
-                dateAdded: new Date("2025-03-16"),
-                isNew: true
-            },
-            {
-                id: 4,
-                name: "LOVE",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742403704/image_2025-03-19_170121296_rzyhyk.png",
-                description: "An amazing clan made by the almighty Julink. This clan is a place to spread the love!",
-                status: "Open Clan",
-                link: "",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742403303/image_2025-03-19_165500845_lnxxha.png",
-                dateAdded: new Date("2025-03-19"),
-                isNew: true
-            },
-            {
-                id: 5,
-                name: "SOLO",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1742231812/image_2025-03-17_171650661_lpdtm0.png",
-                description: "One Man Clan",
-                status: "Closed Clan",
-                link: "",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744098107/image_2025-04-08_084145071_am5uhg.png",
-                dateAdded: new Date("2025-04-06"),
-                isNew: true
-            },
-           {
-                id: 6,
-                name: "UNIQUE",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744011103/anotherimage_rkqmor.png",
-                description: "Always on Top. Always Unique",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/G5yd8KU5qm",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744011111/image_mvxyrf.png",
-                dateAdded: new Date("2025-04-08"),
-                isNew: true
-            },
-           {
-                id: 7,
-                name: "†ɢᴏᴛʜ†",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744098277/image_2025-04-08_084435880_zq53ti.png",
-                description: "Goth clan is a clan for Poxel.io and will be on TOP",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/tDU4x8cqyD",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744098277/image_2025-04-08_084435880_zq53ti.png",
-                dateAdded: new Date("2025-04-08"),
-                isNew: true
-            },
-           {
-                id: 8,
-                name: "RZOR",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744388102/image_2025-04-11_171500347_ahd44w.png",
-                description: "To be in it, you must have a good KDR and stats, if you already are in RZOR for Kour join us again",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/u9XGMwakvu",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744388115/image_2025-04-11_171514072_fgw2rk.png",
-                dateAdded: new Date("2025-04-011"),
-                isNew: true
-            },
-           {
-                id: 9,
-                name: "🇺🇦 Ukraine",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744474983/image_2025-04-12_172300985_f1ac40.png",
-                description: "We are a Ukrainian Poxel.io clan uniting players from Ukraine and beyond. Our community focuses on teamwork, skill development, fun events, and meme-worthy moments!Join us to connect, compete, and win.",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/AaNUcgMY",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744474994/image_2025-04-12_172311705_nu100f.png",
-                dateAdded: new Date("2025-04-012"),
-                isNew: true
-            },
-           {
-                id: 10,
-                name: "TzN",
-                logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744874654/image_2025-04-17_082412020_elmjnc.png",
-                description: "TzN Is a competitive clan with many of its members originating from all types of shooters, but mainly Venge.io which most will know us for, but we are expanding to Poxel to seek new a great players to play competitive, We hope you can have a great stay when you make it in to TzN, but know it will be difficult to join, we are a close community, and looking for new members always! Thank you",
-                status: "Available for Requests (Includes Requirements)",
-                link: "https://discord.gg/GpU2D77Yxb",
-                coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744874654/image_2025-04-17_082412020_elmjnc.png",
-                dateAdded: new Date("2025-04-017"),
-                isNew: true
-            },
-        ];
+    <!-- Cloudinary Upload Widget (Optional but often useful) -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
-        function isNewClan(dateAdded) {
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            return dateAdded > oneWeekAgo;
-        }
+    <!-- Your Custom Scripts - CRITICAL: Create these files in a 'js' folder -->
+    <script src="firebase-config.js"></script> <!-- Contains your Firebase API keys -->
+    <script src="auth.js"></script>         <!-- Handles authentication logic, modal -->
+    <script src="main.js"></script>         <!-- Handles fetching/displaying clans on this page -->
 
-        function formatRelativeDate(date) {
-            const now = new Date();
-            const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
-
-            if (diffInDays === 0) {
-                return "Today";
-            } else if (diffInDays === 1) {
-                return "Yesterday";
-            } else if (diffInDays < 7) {
-                return `${diffInDays} days ago`;
-            } else {
-                return `${date.toLocaleDateString()}`;
-            }
-        }
-
-        function getStatusDotClass(status) {
-            if (status === "Open Clan") {
-                return "status-dot-open";
-            } else if (status === "Available for Requests (Includes Requirements)") {
-                return "status-dot-requests";
-            } else {
-                return "status-dot-closed";
-            }
-        }
-
-        function getButtonHTML(clan) {
-            if (clan.status === "Closed Clan") {
-                return `<div class="closed-button">Closed <i class="fas fa-lock"></i></div>`;
-            } else if (clan.link) {
-                return `<div class="join-button">Join Now <i class="fas fa-arrow-right"></i></div>`;
-            } else {
-                return '';
-            }
-        }
-
-        function createClanCard(clan) {
-            const isNew = isNewClan(clan.dateAdded);
-            const hasLink = clan.link && clan.link.trim() !== '';
-
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.setAttribute('data-status', clan.status);
-            card.setAttribute('data-date', clan.dateAdded.getTime());
-            card.setAttribute('data-new', isNew);
-
-            let cardHTML = `
-                <a href="${hasLink ? clan.link : '#'}" ${!hasLink ? 'class="no-link"' : ''} ${!hasLink ? 'onclick="event.preventDefault()"' : ''}>
-                    ${isNew ? '<div class="new-tag">NEW</div>' : ''}
-                    <img class="card-image" src="${clan.coverImage}" alt="${clan.name}">
-                    <div class="card-content">
-                        <div class="card-title">
-                            <img src="${clan.logo}" alt="${clan.name} logo">
-                            <h3>${clan.name}</h3>
-                        </div>
-                        <div class="card-description">
-                            ${clan.description}
-                        </div>
-                        ${getButtonHTML(clan)}
-                        <div class="card-stats">
-                            <div class="online-count">
-                                <div class="${getStatusDotClass(clan.status)}"></div>
-                                ${clan.status}
-                            </div>
-                            <div class="date-added">Added: ${formatRelativeDate(clan.dateAdded)}</div>
-                        </div>
-                    </div>
-                </a>
-            `;
-
-            card.innerHTML = cardHTML;
-            return card;
-        }
-
-        function renderClans(searchTerm = '') {
-            clansGrid.innerHTML = '';
-
-            const filteredClans = clans.filter(clan =>
-                clan.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                clan.description.toLowerCase().includes(searchTerm.toLowerCase())
-            );
-
-            if (filteredClans.length === 0) {
-                const emptyMessage = document.createElement('div');
-                emptyMessage.className = 'empty-results';
-                emptyMessage.innerHTML = `
-                    <i class="fas fa-search"></i>
-                    <p>No clans match your search</p>
-                `;
-                clansGrid.appendChild(emptyMessage);
-                return;
-            }
-
-            filteredClans.forEach(clan => {
-                const card = createClanCard(clan);
-                clansGrid.appendChild(card);
-            });
-        }
-
-        renderClans();
-
-        searchInput.addEventListener('input', () => {
-            renderClans(searchInput.value);
-        });
-    </script>
 </body>
-
 </html>
