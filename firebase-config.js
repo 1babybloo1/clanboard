@@ -1,3 +1,5 @@
+// firebase-config.js
+
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCofbgxKSy-4B3OBhA02SHbfbplsxLk75o",
@@ -9,7 +11,16 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
-const clansCollection = db.collection("clans"); // Reference to the 'clans' collection
+// Ensure this check prevents re-initialization if script somehow runs twice
+if (!firebase.apps.length) {
+   firebase.initializeApp(firebaseConfig);
+   console.log("Firebase initialized by firebase-config.js");
+} else {
+   firebase.app(); // if already initialized, use that app
+   console.log("Firebase already initialized.");
+}
+
+// DO NOT declare auth, db, or collections here.
+// const auth = firebase.auth();         <--- REMOVE
+// const db = firebase.firestore();      <--- REMOVE
+// const clansCollection = db.collection("clans"); <--- REMOVE
