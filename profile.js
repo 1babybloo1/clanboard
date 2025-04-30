@@ -29,14 +29,14 @@ const loadingClansMsg = document.getElementById('loadingClansMsg');
 //          Configuration
 // ======================================================
 // --- Cloudinary Config (Replace with your actual details) ---
-const CLOUDINARY_URL = 'YOUR_CLOUDINARY_API_BASE_URL'; // e.g., 'https://api.cloudinary.com/v1_1/your_cloud_name/upload'
-const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UNSIGNED_UPLOAD_PRESET'; // Your *unsigned* preset name
+const CLOUDINARY_URL = 'khttps://api.cloudinary.com/v1_1/djttn4xv'; // e.g., 'https://api.cloudinary.com/v1_1/your_cloud_name/upload'
+const CLOUDINARY_UPLOAD_PRESET = 'compmanage'; // Your *unsigned* preset name
 
 // --- Security & Limit Configuration ---
-const MAX_CLAN_NAME_WORDS = 10;     // Max words for clan name
+const MAX_CLAN_NAME_WORDS = 1;     // Max words for clan name
 const MAX_CLAN_DESC_WORDS = 100;    // Max words for description
 const MAX_USER_CLANS = 5;           // Maximum clans per user
-const SUBMIT_RATE_LIMIT_MS = 5000;  // 5 seconds cooldown between submissions
+const SUBMIT_RATE_LIMIT_MS = 3.6e+6;  // 5 seconds cooldown between submissions
 
 // ======================================================
 //          State Variables
