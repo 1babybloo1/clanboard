@@ -1,162 +1,274 @@
-const authButton = document.getElementById('authButton');
-const logoutButton = document.getElementById('logoutButton');
-const authModal = document.getElementById('authModal');
-const loginForm = document.getElementById('loginForm');
-const signupForm = document.getElementById('signupForm');
-const loginError = document.getElementById('loginError');
-const signupError = document.getElementById('signupError');
+// auth.js - Handles authentication state, UI updates, login/signup logic
 
-let redirectToProfile = false; // Flag to redirect after login/signup
+// Wait for the DOM to be fully loaded before accessing elements
+document.addEventListener('DOMContentLoaded', () => {
 
-const blacklistedWords = ['nigger', 'n1gger', 'palestine', 'cunt', 'fuck', 'shit']; // Customize as needed
-
-// --- Modal Handling ---
-function openAuthModal(redirect = false) {
-    redirectToProfile = redirect;
-    if (authModal) authModal.style.display = 'flex';
-    if (loginForm) loginForm.reset();
-    if (signupForm) signupForm.reset();
-    if (loginError) loginError.textContent = '';
-    if (signupError) signupError.textContent = '';
-    openTab(null, 'login');
-    const loginTabButton = document.querySelector('#authTabs button[onclick*="login"]');
-    if (loginTabButton) loginTabButton.click();
-}
-
-function closeAuthModal() {
-    if (authModal) authModal.style.display = 'none';
-    redirectToProfile = false;
-}
-
-window.onclick = function(event) {
-    if (event.target == authModal) {
-        closeAuthModal();
+    // Check if Firebase is available and initialized
+    if (typeof firebase === 'undefined' || !firebase.apps.length) {
+        console.error("Firebase is not available or not initialized. Ensure firebase-config.js runs first.");
+        // Display error to user? E.g., disable auth buttons
+        const authButton = document.getElementById('authButton');
+        if (authButton) authButton.disabled = true;
+        const logoutButton = document.getElementById('logoutButton');
+        if (logoutButton) logoutButton.disabled = true;
+        return; // Stop execution of this script if Firebase isn't ready
     }
-};
 
-// --- Tab Switching ---
-function openTab(evt, tabName) {
-    let tabcontent = document.getElementsByClassName("tab-content");
-    for (let i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    let tablinks = document.getElementsByClassName("tab-link");
-    for (let i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    const currentTab = document.getElementById(tabName);
-    if (currentTab) currentTab.style.display = "block";
-    if (evt) evt.currentTarget.className += " active";
-    if (loginError) loginError.textContent = '';
-    if (signupError) signupError.textContent = '';
-}
+    // --- Get Firebase Services (ONLY after ensuring Firebase is initialized) ---
+    const auth = firebase.auth();
+    const db = firebase.firestore(); // Get Firestore instance if needed by auth logic (currently not, but good practice)
 
-// --- Firebase Auth Listener ---
-auth.onAuthStateChanged(user => {
-    if (user) {
-        console.log("User logged in:", user.email);
-        if (authButton) {
-            authButton.textContent = 'Profile';
-            authButton.onclick = () => { window.location.href = 'profile.html'; };
-        }
-        if (logoutButton) logoutButton.style.display = 'inline-block';
-        closeAuthModal();
-        if (redirectToProfile) {
-            window.location.href = 'profile.html';
-            redirectToProfile = false;
-        }
-    } else {
-        console.log("User logged out");
-        if (authButton) {
-            authButton.textContent = 'Add Your Clan';
-            authButton.onclick = () => openAuthModal(true);
-        }
-        if (logoutButton) logoutButton.style.display = 'none';
-    }
-    if (typeof renderClans === 'function') renderClans();
-    if (typeof loadUserProfile === 'function') loadUserProfile();
-});
+    // --- DOM Elements (Access AFTER DOMContentLoaded) ---
+    const authButton = document.getElementById('authButton');
+    const logoutButton = document.getElementById('logoutButton');
+    const authModal = document.getElementById('authModal');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginError = document.getElementById('loginError');
+    const signupError = document.getElementById('signupError');
+    // Other elements if needed
 
-// --- Event Listeners ---
+    // --- Global state ---
+    let loggedInUser = null; // Store current user state
 
-if (authButton) {
-    authButton.onclick = () => {
-        if (auth.currentUser) {
-            window.location.href = 'profile.html';
+    // --- Authentication State Change Listener ---
+    auth.onAuthStateChanged(user => {
+        loggedInUser = user; // Update user state
+        updateAuthUI(user); // Update UI elements
+
+        // Page-specific actions based on auth state
+        if (user) {
+            console.log("User is signed in:", user.uid);
+            // Actions for when user is signed in (e.g., redirect handling is below)
         } else {
-            openAuthModal(true);
-        }
-    };
-}
-
-if (logoutButton) {
-    logoutButton.addEventListener('click', () => {
-        auth.signOut().then(() => {
-            console.log("Logout successful");
-            if (window.location.pathname.includes('profile.html')) {
+            console.log("User is signed out.");
+             // If on submit page and logged out, redirect back to index
+             if (window.location.pathname.includes('submit.html')) {
+                console.log("User logged out on submit page, redirecting to index.");
                 window.location.href = 'index.html';
             }
-        }).catch(error => {
-            console.error("Logout failed:", error);
-            alert("Logout failed. Please try again.");
+        }
+    });
+
+    // --- UI Update Function ---
+    function updateAuthUI(user) {
+        // Hide/Show Add Clan vs Logout buttons (ensure elements exist first)
+        if (authButton) {
+             // On index page, 'Add Your Clan' button hides when logged in
+             // On submit page, this button likely doesn't exist
+             if (window.location.pathname.includes('index.html') || window.location.pathname === '/') {
+                 authButton.style.display = user ? 'none' : 'block';
+             } else {
+                  authButton.style.display = 'none'; // Assume not shown on other pages like submit.html
+             }
+        }
+        if (logoutButton) {
+            logoutButton.style.display = user ? 'block' : 'none';
+        }
+
+        // Close login/signup modal if it's open when auth state changes
+        if (authModal && authModal.style.display === 'flex') {
+            closeAuthModal();
+        }
+    }
+
+    // Make updateAuthUI globally accessible (optional, if other scripts need it)
+    // window.updateAuthUI = updateAuthUI;
+
+    // --- Event Listeners ---
+
+    // 'Add Your Clan' / Login Button (mainly for index.html)
+    if (authButton) {
+        authButton.addEventListener('click', () => {
+            if (loggedInUser) {
+                // If already logged in (e.g., on index page, this button should be hidden, but safety check), redirect
+                 window.location.href = 'submit.html';
+            } else {
+                // If logged out, open the login/signup modal
+                 openAuthModal(); // Defined below
+            }
         });
-    });
-}
+    }
 
-// --- Login Form Submission ---
-if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('loginEmail').value;
-        const password = document.getElementById('loginPassword').value;
-        loginError.textContent = '';
+    // Logout Button (should exist on pages where logout is possible)
+    if (logoutButton) {
+        logoutButton.addEventListener('click', () => {
+            auth.signOut()
+                .then(() => {
+                    console.log('User signed out successfully.');
+                    // onAuthStateChanged handles UI updates and potential redirect if on submit.html
+                    // Optionally, force redirect to index page regardless
+                     // if (!window.location.pathname.includes('index.html') && window.location.pathname !== '/') {
+                    //    window.location.href = 'index.html';
+                    // }
+                })
+                .catch(error => {
+                    console.error('Sign out error:', error);
+                    alert("Error signing out: " + error.message);
+                });
+        });
+    }
 
-        auth.signInWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                console.log("Login successful for:", userCredential.user.email);
-            })
-            .catch((error) => {
-                console.error("Login error:", error.code, error.message);
-                loginError.textContent = error.message;
-            });
-    });
-}
+    // Login Form Submission (only on index.html with the modal)
+    if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearAuthErrors();
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+             if (!emailInput || !passwordInput) return; // Element check
 
-// --- Signup Form Submission (with blacklist check) ---
-if (signupForm) {
-    signupForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const email = document.getElementById('signupEmail').value;
-        const password = document.getElementById('signupPassword').value;
-        const usernameInput = document.getElementById('signupUsername');
-        const username = usernameInput ? usernameInput.value.trim().toLowerCase() : '';
-        signupError.textContent = '';
+            const email = emailInput.value;
+            const password = passwordInput.value;
 
-        // Username validation
-        if (!username) {
-            signupError.textContent = 'Username is required.';
-            return;
+             setLoading(loginForm.querySelector('button'), true, "Logging in..."); // Visual feedback
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("Login successful", userCredential.user);
+                     window.location.href = 'submit.html'; // Redirect on success
+                })
+                .catch((error) => {
+                    console.error("Login error:", error);
+                    if (loginError) loginError.textContent = mapAuthError(error.code); // Map common codes
+                     setLoading(loginForm.querySelector('button'), false, "Login");
+                });
+        });
+    }
+
+    // Signup Form Submission (only on index.html with the modal)
+    if (signupForm) {
+        signupForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            clearAuthErrors();
+            const emailInput = document.getElementById('signupEmail');
+            const passwordInput = document.getElementById('signupPassword');
+            if (!emailInput || !passwordInput) return;
+
+            const email = emailInput.value;
+            const password = passwordInput.value;
+
+            if (password.length < 6) {
+                 if (signupError) signupError.textContent = "Password must be at least 6 characters long.";
+                 return;
+            }
+
+             setLoading(signupForm.querySelector('button'), true, "Signing Up...");
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    console.log("Signup successful", userCredential.user);
+                     window.location.href = 'submit.html'; // Redirect on success
+                })
+                .catch((error) => {
+                    console.error("Signup error:", error);
+                     if (signupError) signupError.textContent = mapAuthError(error.code);
+                     setLoading(signupForm.querySelector('button'), false, "Sign Up");
+                });
+        });
+    }
+
+    // --- Modal Functions (Specific to index.html modal structure) ---
+    function openAuthModal() {
+        if (!authModal) return; // Only proceed if modal exists
+        authModal.style.display = "flex"; // Use flex as per CSS for centering
+        if (loginForm) loginForm.reset(); // Reset forms on open
+        if (signupForm) signupForm.reset();
+        clearAuthErrors();
+        openTab(null, 'login'); // Default to login tab when opening
+    }
+
+    function closeAuthModal() {
+        if (authModal) {
+            authModal.style.display = "none";
         }
+    }
 
-        const isBlacklisted = blacklistedWords.some(word => username.includes(word));
-        if (isBlacklisted) {
-            signupError.textContent = 'Username contains a restricted word. Please choose another.';
-            return;
+    function openTab(evt, tabName) {
+        if (!authModal) return;
+        let i, tabcontent, tablinks;
+        tabcontent = authModal.querySelectorAll(".tab-content");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
         }
+        tablinks = authModal.querySelectorAll(".tab-link"); // Corrected selector from original example if needed
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].classList.remove("active");
+        }
+        const currentTabContent = document.getElementById(tabName);
+        if(currentTabContent) {
+            currentTabContent.style.display = "block";
+            currentTabContent.classList.add("active");
+        }
+        // Make the clicked button active
+        if (evt?.currentTarget) {
+             evt.currentTarget.classList.add("active");
+        } else {
+             // If called without an event (e.g., default opening), activate the corresponding button
+             const defaultTabButton = authModal.querySelector(`.tab-link[onclick*="'${tabName}'"]`);
+            if (defaultTabButton) defaultTabButton.classList.add('active');
+        }
+        clearAuthErrors();
+    }
 
-        // Firebase Signup
-        auth.createUserWithEmailAndPassword(email, password)
-            .then((userCredential) => {
-                console.log("Signup successful for:", userCredential.user.email);
-                return userCredential.user.updateProfile({ displayName: username });
-            })
-            .catch((error) => {
-                console.error("Signup error:", error.code, error.message);
-                signupError.textContent = error.message;
-            });
-    });
-}
+     // Make modal functions globally available for inline 'onclick' handlers
+     window.openTab = openTab;
+     window.closeAuthModal = closeAuthModal;
 
-// --- Make modal/tab functions globally accessible ---
-window.closeAuthModal = closeAuthModal;
-window.openTab = openTab;
+
+     // --- Helper Functions ---
+     function clearAuthErrors() {
+         if(loginError) loginError.textContent = '';
+         if(signupError) signupError.textContent = '';
+     }
+
+     // Simple loading state for form buttons
+     function setLoading(buttonElement, isLoading, loadingText = "Processing...") {
+         if (!buttonElement) return;
+         const originalText = buttonElement.dataset.originalText || buttonElement.textContent;
+         if (isLoading) {
+             if (!buttonElement.dataset.originalText) { // Store original text only once
+                 buttonElement.dataset.originalText = originalText;
+             }
+             buttonElement.disabled = true;
+             buttonElement.textContent = loadingText;
+         } else {
+             buttonElement.disabled = false;
+             buttonElement.textContent = originalText; // Restore original text
+         }
+     }
+
+    // Map common Firebase Auth error codes to friendlier messages
+     function mapAuthError(errorCode) {
+         switch (errorCode) {
+             case 'auth/invalid-email':
+                 return 'Please enter a valid email address.';
+             case 'auth/user-disabled':
+                 return 'This account has been disabled.';
+             case 'auth/user-not-found':
+                 return 'No account found with this email.';
+             case 'auth/wrong-password':
+                 return 'Incorrect password. Please try again.';
+             case 'auth/email-already-in-use':
+                 return 'An account already exists with this email address.';
+             case 'auth/weak-password':
+                 return 'Password is too weak. Please use at least 6 characters.';
+             case 'auth/requires-recent-login':
+                  return 'Please log in again to complete this action.';
+             default:
+                 return 'An unknown error occurred. Please try again.'; // Generic fallback
+         }
+     }
+
+
+     // Click outside modal to close (specific to index.html modal)
+    if (authModal) { // Only add this listener if the modal exists
+         window.addEventListener('click', function(event) {
+             if (event.target == authModal) {
+                 closeAuthModal();
+             }
+         });
+     }
+
+}); // End DOMContentLoaded listener
