@@ -35,12 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const manageSection = document.getElementById('manageSection');
 
     // --- Configuration ---
-    const CLOUDINARY_CLOUD_NAME = 'YOUR_CLOUD_NAME'; // Replace with your Cloudinary cloud name
-    const CLOUDINARY_UPLOAD_PRESET = 'YOUR_UNSIGNED_PRESET'; // Replace with your unsigned upload preset name
+    const CLOUDINARY_CLOUD_NAME = 'djttn4xvk'; // Replace with your Cloudinary cloud name
+    const CLOUDINARY_UPLOAD_PRESET = 'compmanage'; // Replace with your unsigned upload preset name
     const SUBMISSION_COOLDOWN_HOURS = 24; // Cooldown in hours
     const MAX_NAME_WORDS = 1;
     const MAX_DESC_WORDS = 50;
-    const BLACKLISTED_WORDS = ["badword1", "spamword", "naughty"]; // Add words (lowercase)
+    const BLACKLISTED_WORDS = ["nigger", "n1gger", "cunt",'shit','nazi','fuck']; // Add words (lowercase)
 
     let currentUser = null;
     let editingClanId = null; // Store the ID of the clan being edited
