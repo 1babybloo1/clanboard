@@ -5,7 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poxel Clan Board</title>
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts (Inter) - Added for font consistency -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+
+    <!-- Your CSS Styles -->
     <style>
         :root {
             --primary-color: #6366f1;
@@ -206,7 +213,7 @@
             box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4), 0 8px 10px -6px rgba(99, 102, 241, 0.3);
         }
 
-        /* Make the whole card an outer container, but the link applies only if present */
+        /* Card link wrapper style */
          .card a.card-link-wrapper {
              text-decoration: none;
              color: inherit;
@@ -214,11 +221,6 @@
              flex-direction: column;
              flex-grow: 1; /* Allow link to fill card */
          }
-         /* If card has no link, direct children handle layout */
-         .card > *:not(a.card-link-wrapper) {
-             /* Style direct children if card isn't wrapped in <a> */
-         }
-
 
         .card-image {
             width: 100%;
@@ -228,11 +230,9 @@
             display: block; /* Remove extra space below image */
         }
 
-        .card a.card-link-wrapper:hover .card-image {
-            transform: scale(1.05);
-        }
-        /* Apply hover effect directly to card if no link */
-         .card:hover .card-image {
+        /* Apply image hover effect through the link or card */
+         .card a.card-link-wrapper:hover .card-image,
+         .card:not(:has(a.card-link-wrapper)):hover .card-image { /* Use :has if supported, otherwise simplify */
              transform: scale(1.05);
          }
 
@@ -276,7 +276,6 @@
         }
 
         .card-buttons {
-            margin-top: auto; /* Push button above stats */
              margin-bottom: 1.5rem; /* Space between button and stats */
         }
 
@@ -310,7 +309,7 @@
         .status-dot-requests { background-color: var(--warning); }
         .status-dot-closed { background-color: var(--gray); }
 
-
+        /* Pulse Animation for Open Status */
         .status-dot-open::after {
             content: '';
             position: absolute;
@@ -327,18 +326,9 @@
         }
 
         @keyframes pulse {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.4;
-            }
-            70% {
-                transform: translate(-50%, -50%) scale(2.5);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0;
-            }
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; }
+            70% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
 
         .new-tag {
@@ -389,7 +379,6 @@
                 gap: 1.5rem;
                 text-align: center; /* Center all items */
             }
-
             .footer-left, .footer-center, .footer-right {
                 text-align: center !important; /* Ensure centering */
                 width: 100%; /* Take full width */
@@ -398,7 +387,7 @@
 
         .footer-left p {
             margin: 0;
-            font-size: 1rem;
+            font-size: 1rem; /* Adjusted font size slightly */
             color: var(--text-muted);
         }
 
@@ -408,7 +397,7 @@
         }
 
         .glowing-image {
-            height: 80px;
+            height: 80px; /* Reduced size a bit */
             width: auto;
             position: relative;
             z-index: 2;
@@ -438,38 +427,31 @@
             font-size: 1.25rem;
         }
 
-        /* Button styling for cards */
-         .card a.no-link { /* Style specifically for cards with no external link */
-            cursor: default;
-         }
-
+        /* Card Button Styles */
         .join-button {
             display: inline-block;
-            /* margin-top: 1rem; Removed, handled by .card-buttons */
             padding: 0.5rem 1.25rem;
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
+            color: white !important; /* Ensure text color overrides link styles */
             border-radius: 9999px;
             font-size: 0.875rem;
             font-weight: 500;
             transition: all 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-             text-decoration: none; /* Ensure link styles are correct */
+             text-decoration: none !important; /* Ensure link styles are overridden */
+             cursor: pointer;
         }
 
         .join-button:hover {
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
             transform: translateY(-2px);
-            color: white; /* Maintain text color on hover */
+            color: white !important;
         }
 
-        .join-button i {
-            margin-left: 0.5rem;
-        }
+        .join-button i { margin-left: 0.5rem; }
 
         .closed-button {
             display: inline-block;
-             /* margin-top: 1rem; Removed */
             padding: 0.5rem 1.25rem;
             background-color: var(--gray);
             color: white;
@@ -478,12 +460,11 @@
             font-weight: 500;
             cursor: not-allowed;
             opacity: 0.7;
+            text-decoration: none;
         }
-        .closed-button i {
-             margin-left: 0.5rem;
-        }
+        .closed-button i { margin-left: 0.5rem; }
 
-        /* Basic Modal Styles */
+        /* --- Modal Styles (Login/Signup) --- */
         .modal {
             position: fixed;
             z-index: 100;
@@ -520,107 +501,53 @@
             font-size: 28px;
             font-weight: bold;
             cursor: pointer;
-            line-height: 1; /* Ensure consistent positioning */
+            line-height: 1;
         }
+        .close-button:hover, .close-button:focus { color: var(--text-primary); text-decoration: none; }
 
-        .close-button:hover,
-        .close-button:focus {
-            color: var(--text-primary);
-            text-decoration: none;
-        }
-
-        /* Tab Styles */
         #authTabs {
             overflow: hidden;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
-            display: flex; /* Use flexbox for tabs */
+            display: flex;
         }
-
         #authTabs button {
             background-color: inherit;
-            border: none;
-            outline: none;
-            cursor: pointer;
-            padding: 14px 16px;
-            transition: 0.3s;
-            font-size: 1rem;
-            color: var(--text-muted);
-            font-weight: 500;
-            flex-grow: 1; /* Make tabs share space */
-             text-align: center;
-             border-bottom: 3px solid transparent; /* Placeholder for active border */
+            border: none; outline: none; cursor: pointer;
+            padding: 14px 16px; transition: 0.3s; font-size: 1rem;
+            color: var(--text-muted); font-weight: 500; flex-grow: 1;
+             text-align: center; border-bottom: 3px solid transparent;
              margin-bottom: -1px; /* Align border */
         }
+        #authTabs button:hover { color: var(--primary-color); }
+        #authTabs button.active { color: var(--primary-color); border-bottom-color: var(--primary-color); }
 
-        #authTabs button:hover {
-            color: var(--primary-color);
-        }
+        .tab-content { display: none; padding: 10px 0; }
+        .tab-content.active { display: block; }
+         .tab-content h2 { font-size: 1.5rem; margin-bottom: 1.5rem; text-align: center; color: var(--text-primary); }
 
-        #authTabs button.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
-        }
-
-        .tab-content {
-            display: none; /* Hidden by default */
-            padding: 10px 0;
-        }
-        .tab-content.active { /* Use class to show active tab */
-             display: block;
-        }
-
-         .tab-content h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            color: var(--text-primary);
-         }
-
-        /* Form Styles */
         #loginForm input, #signupForm input {
-            width: 100%;
-            padding: 12px 15px;
-            margin-bottom: 15px;
-            display: inline-block;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            background-color: rgba(15, 23, 42, 0.8); /* Slightly transparent dark */
-            box-sizing: border-box;
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
+            width: 100%; padding: 12px 15px; margin-bottom: 15px;
+            display: inline-block; border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(15, 23, 42, 0.8); box-sizing: border-box;
+            border-radius: 8px; color: var(--text-primary); font-size: 0.95rem;
         }
-
         #loginForm input:focus, #signupForm input:focus {
-             outline: none;
-             border-color: var(--primary-color);
+             outline: none; border-color: var(--primary-color);
              box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
         }
 
         #loginForm button, #signupForm button {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 14px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: opacity 0.3s ease;
-            margin-top: 0.5rem; /* Add some space above button */
+            color: white; padding: 14px 20px; border: none; border-radius: 8px;
+            cursor: pointer; width: 100%; font-size: 1rem; font-weight: 600;
+            transition: opacity 0.3s ease; margin-top: 0.5rem;
         }
-
-        #loginForm button:hover, #signupForm button:hover {
-            opacity: 0.9;
-        }
+        #loginForm button:hover, #signupForm button:hover { opacity: 0.9; }
 
         .error-message {
-            color: var(--danger);
-            font-size: 0.85rem;
-            margin-top: 10px;
-            text-align: center;
-            min-height: 1.2em; /* Reserve space */
+            color: var(--danger); font-size: 0.85rem; margin-top: 10px;
+            text-align: center; min-height: 1.2em; /* Reserve space */
         }
 
     </style>
@@ -629,7 +556,9 @@
 <body>
     <!-- Authentication Buttons Area -->
     <div class="auth-container">
+        <!-- Button initially shows "Add Your Clan", text might be changed by auth.js if needed, or behavior changes (direct link vs modal open) -->
         <button id="authButton" class="auth-button">Add Your Clan</button>
+        <!-- Logout button hidden by default, shown by auth.js when logged in -->
         <button id="logoutButton" class="auth-button logout-button" style="display: none;">Logout</button>
     </div>
 
@@ -649,23 +578,24 @@
         <!-- Clan Grid -->
         <div class="grid" id="clansGrid">
             <!-- Clan cards will be dynamically inserted here by main.js -->
-            <!-- Initial loading message (optional) -->
+            <!-- Initial loading message -->
             <p style="text-align: center; grid-column: 1 / -1; color: var(--text-muted);">Loading clans...</p>
         </div>
     </div>
 
-    <!-- Authentication Modal -->
+    <!-- Authentication Modal (Login/Signup) -->
     <div id="authModal" class="modal">
         <div class="modal-content">
+             <!-- Close button calls function defined in auth.js -->
             <span class="close-button" onclick="closeAuthModal()">×</span>
             <div id="authTabs">
-                <!-- Ensure onclick calls functions defined in auth.js -->
+                 <!-- Tab buttons call function defined in auth.js -->
                 <button class="tab-link active" onclick="openTab(event, 'login')">Login</button>
                 <button class="tab-link" onclick="openTab(event, 'signup')">Sign Up</button>
             </div>
 
             <!-- Login Form -->
-            <div id="login" class="tab-content active"> <!-- Add 'active' class to default tab -->
+            <div id="login" class="tab-content active">
                 <h2>Login</h2>
                 <form id="loginForm">
                     <input type="email" id="loginEmail" placeholder="Email" required>
@@ -680,7 +610,6 @@
                 <h2>Sign Up</h2>
                 <form id="signupForm">
                     <input type="email" id="signupEmail" placeholder="Email" required>
-                    <input type="text" id="signupUsername" placeholder="Username" required />
                     <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" required>
                     <button type="submit">Sign Up</button>
                     <p id="signupError" class="error-message"></p>
@@ -709,19 +638,22 @@
         </div>
     </footer>
 
-    <!-- Firebase App (the core Firebase SDK) - USE VERSION 8 FOR COMPATIBILITY WITH PROVIDED CODE -->
+    <!-- === SCRIPTS === -->
+    <!-- Load them in the correct order -->
+
+    <!-- 1. Firebase SDKs (Use v8 as specified) -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <!-- Add the Firebase products you want to use -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-    <!-- Cloudinary Upload Widget (Optional but often useful) -->
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
-    <!-- Your Custom Scripts - CRITICAL: Create these files in a 'js' folder -->
-    <script src="firebase-config.js"></script> <!-- Contains your Firebase API keys -->
-    <script src="auth.js"></script>         <!-- Handles authentication logic, modal -->
-    <script src="main.js"></script>         <!-- Handles fetching/displaying clans on this page -->
+    <script src="firebase-config.js"></script>  <!-- Initializes Firebase -->
+
+    <script src="auth.js"></script>            <!-- Handles auth state, login/logout button etc. - INCLUDE ONLY ONCE -->
+
+    <script src="main.js"></script>            <!-- Handles displaying clans on THIS page -->
+
+    <!-- <script src="submit.js"></script> --> <!-- Make SURE submit.js is NOT included here -->
 
 </body>
 </html>
