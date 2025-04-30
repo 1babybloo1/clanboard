@@ -26,7 +26,7 @@ const CLOUDINARY_CLOUD_NAME = "djttn4xvk";
 const CLOUDINARY_UPLOAD_PRESET = "compmanage";
 
 // Blacklisted words
-const BLACKLISTED_WORDS = ['furry', 'hitler', 'slave', 'nigger', 'nigga', 'kkk', 'KKK', 'Nazi'];
+const BLACKLISTED_WORDS = ['furry', 'hitler', 'slave', 'nigger', 'nigga', 'kkk', 'KKK', 'Nazi', 'N1GG3R', 'NGA', 'FAGGOT', 'faggot', 'kys', 'nga', 'cunt', 'paki', 'PALESTINE', 'palestine'];
 
 let currentUser = null;
 
