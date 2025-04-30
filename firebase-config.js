@@ -1,11 +1,11 @@
 // Replace with your actual Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyBzhq6XQFLW8XnLby9INMAz5mUbvNEJ130",
-  authDomain: "clanboard.firebaseapp.com",
-  projectId: "clanboard",
-  storageBucket: "clanboard.firebasestorage.app",
-  messagingSenderId: "966112231326",
-  appId: "1:966112231326:web:7233edeba6ba1945e1a08f",
+  apiKey: "AIzaSyCofbgxKSy-4B3OBhA02SHbfbplsxLk75o",
+  authDomain: "clanboard-8d1c6.firebaseapp.com",
+  projectId: "clanboard-8d1c6",
+  storageBucket: "clanboard-8d1c6.firebasestorage.app",
+  messagingSenderId: "915519944540",
+  appId: "1:915519944540:web:7c59a6517f16976cd2b399",
 };
 
 // Initialize Firebase
