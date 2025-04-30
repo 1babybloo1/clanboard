@@ -1,4 +1,4 @@
-// Elements
+// Elements (assuming these are already defined as in your original code)
 const profileContent = document.getElementById('profileContent');
 const loginPrompt = document.getElementById('loginPrompt');
 const welcomeMessage = document.getElementById('welcomeMessage');
@@ -21,222 +21,184 @@ const formMessage = document.getElementById('formMessage');
 const userClansList = document.getElementById('userClansList');
 const loadingClansMsg = document.getElementById('loadingClansMsg');
 
-// Cloudinary config
-const CLOUDINARY_CLOUD_NAME = "djttn4xvk";
-const CLOUDINARY_UPLOAD_PRESET = "compmanage";
+// --- Security & Limit Configuration ---
+const MAX_CLAN_NAME_WORDS = 10; // Example: Max 10 words for clan name
+const MAX_CLAN_DESC_WORDS = 100; // Example: Max 100 words for description
+const MAX_USER_CLANS = 5; // Maximum clans per user
+const SUBMIT_RATE_LIMIT_MS = 5000; // 5 seconds cooldown between submissions
 
-// Blacklisted words
-const BLACKLISTED_WORDS = ['furry', 'hitler', 'slave', 'nigger', 'nigga', 'kkk', 'KKK', 'Nazi', 'N1GG3R', 'NGA', 'FAGGOT', 'faggot', 'kys', 'nga', 'cunt', 'paki', 'PALESTINE', 'palestine'];
+// --- State Variables ---
+let lastSubmitTimestamp = 0;
+let isSubmitting = false; // Prevent double clicks while processing
 
-let currentUser = null;
-
-function containsBlacklistedWords(text) {
-    const lower = text.toLowerCase();
-    return BLACKLISTED_WORDS.some(word => lower.includes(word));
-}
-
-function setFormMessage(message, isError = false) {
-    if (!formMessage) return;
+// --- Helper Functions ---
+function displayFormMessage(message, isError = true) {
     formMessage.textContent = message;
-    formMessage.className = isError ? 'error' : 'success';
-    setTimeout(() => {
-        if (formMessage.textContent === message) {
-            formMessage.textContent = '';
-            formMessage.className = '';
-        }
-    }, 5000);
+    formMessage.style.color = isError ? 'red' : 'green';
+    formMessage.style.display = 'block';
 }
 
-function resetForm() {
-    clanForm.reset();
-    clanIdInput.value = '';
-    clanLogoUrlInput.value = '';
-    clanCoverImageUrlInput.value = '';
-    logoPreview.src = '';
-    bannerPreview.src = '';
-    logoPreview.style.border = '1px dashed var(--gray)';
-    bannerPreview.style.border = '1px dashed var(--gray)';
-    formTitle.textContent = 'Add Your Clan';
-    submitClanBtn.textContent = 'Add Clan';
-    submitClanBtn.disabled = false;
-    cancelEditBtn.style.display = 'none';
+function clearFormMessage() {
     formMessage.textContent = '';
-    formMessage.className = '';
+    formMessage.style.display = 'none';
 }
 
-function loadUserProfile() {
-    currentUser = auth.currentUser;
-    if (currentUser) {
-        profileContent.style.display = 'block';
-        loginPrompt.style.display = 'none';
-        welcomeMessage.textContent = `Welcome, ${currentUser.email}! Manage your clans below.`;
-        resetForm();
-        fetchUserClans();
-    } else {
-        profileContent.style.display = 'none';
-        loginPrompt.style.display = 'block';
-        userClansList.innerHTML = '';
-    }
+function countWords(str) {
+    if (!str) return 0;
+    return str.trim().split(/\s+/).filter(Boolean).length; // Split by whitespace, remove empty strings
 }
 
-const createUploadWidget = (options, callback) => {
-    return cloudinary.createUploadWidget({
-        cloudName: CLOUDINARY_CLOUD_NAME,
-        uploadPreset: CLOUDINARY_UPLOAD_PRESET,
-        folder: 'poxel_clans',
-        ...options
-    }, (err, result) => {
-        if (!err && result && result.event === 'success') {
-            callback(result.info.secure_url);
-        } else if (err) {
-            console.error('Cloudinary Upload Error:', err);
-            setFormMessage("Image upload failed. Please try again.", true);
-        }
-    });
-};
+// --- Event Listeners ---
 
-const logoUploadWidget = createUploadWidget({}, url => {
-    clanLogoUrlInput.value = url;
-    logoPreview.src = url;
-    logoPreview.style.border = 'none';
-});
+// (Keep your existing Cloudinary upload logic, fetchUserClans, display clans etc.)
 
-const bannerUploadWidget = createUploadWidget({ cropping: true, croppingAspectRatio: 16 / 9 }, url => {
-    clanCoverImageUrlInput.value = url;
-    bannerPreview.src = url;
-    bannerPreview.style.border = 'none';
-});
+// Modify the Submit Clan Button Listener
+submitClanBtn.addEventListener('click', async (e) => {
+    e.preventDefault(); // Prevent default form submission
+    clearFormMessage(); // Clear previous messages
 
-uploadLogoBtn?.addEventListener('click', () => logoUploadWidget.open());
-uploadBannerBtn?.addEventListener('click', () => bannerUploadWidget.open());
-cancelEditBtn?.addEventListener('click', resetForm);
-
-clanForm?.addEventListener('submit', async e => {
-    e.preventDefault();
-    if (!currentUser) return setFormMessage("You must be logged in to add/edit clans.", true);
-
-    const name = clanNameInput.value.trim();
-    const desc = clanDescriptionInput.value.trim();
-
-    if (!name || !desc) return setFormMessage("Clan Name and Description are required.", true);
-    if (containsBlacklistedWords(name) || containsBlacklistedWords(desc)) {
-        return setFormMessage("Clan name or description contains blacklisted words.", true);
+    if (isSubmitting) {
+        return; // Prevent double clicks
     }
 
-    const clanData = {
-        name,
-        description: desc,
-        link: clanDiscordInput.value.trim() || null,
-        status: clanStatusInput.value,
-        logo: clanLogoUrlInput.value || null,
-        coverImage: clanCoverImageUrlInput.value || null,
-        userId: currentUser.uid,
-        userEmail: currentUser.email,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    };
-
-    const editingId = clanIdInput.value;
-    submitClanBtn.disabled = true;
-    setFormMessage("Submitting...");
-
-    try {
-        if (editingId) {
-            delete clanData.createdAt;
-            await clansCollection.doc(editingId).set(clanData, { merge: true });
-            setFormMessage("Clan updated successfully!");
-        } else {
-            await clansCollection.add(clanData);
-            setFormMessage("Clan added successfully!");
-        }
-        resetForm();
-        fetchUserClans();
-    } catch (err) {
-        console.error("Error saving clan:", err);
-        setFormMessage(`Error: ${err.message}`, true);
-        submitClanBtn.disabled = false;
+    // --- 1. Rate Limiting Check ---
+    const now = Date.now();
+    if (now - lastSubmitTimestamp < SUBMIT_RATE_LIMIT_MS) {
+        const timeLeft = Math.ceil((SUBMIT_RATE_LIMIT_MS - (now - lastSubmitTimestamp)) / 1000);
+        displayFormMessage(`Please wait ${timeLeft} seconds before submitting again.`);
+        return;
     }
-});
 
-async function fetchUserClans() {
-    if (!userClansList || !currentUser) return;
-
-    loadingClansMsg.style.display = 'block';
-    userClansList.innerHTML = '';
-
-    try {
-        const snapshot = await clansCollection
-            .where("userId", "==", currentUser.uid)
-            .orderBy("createdAt", "desc")
-            .get();
-
-        loadingClansMsg.style.display = 'none';
-
-        if (snapshot.empty) {
-            userClansList.innerHTML = '<p style="color: var(--text-muted);">You haven\'t added any clans yet.</p>';
+    // --- 2. Max Clan Limit Check (Only for *new* clans) ---
+    const isCreatingNewClan = !clanIdInput.value;
+    if (isCreatingNewClan) {
+        const currentClanCount = userClansList.querySelectorAll('li').length; // Assumes list items represent clans
+        if (currentClanCount >= MAX_USER_CLANS) {
+            displayFormMessage(`You have reached the maximum limit of ${MAX_USER_CLANS} clans.`);
             return;
         }
-
-        snapshot.forEach(doc => {
-            const clan = { id: doc.id, ...doc.data() };
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div class="clan-info">
-                    <img src="${clan.logo || 'https://via.placeholder.com/40/0F172A/FFFFFF?text=L'}" alt="${clan.name} Logo">
-                    <span>${clan.name}</span>
-                </div>
-                <div class="clan-actions">
-                    <button class="edit-btn" data-id="${clan.id}"><i class="fas fa-edit"></i> Edit</button>
-                    <button class="delete-btn" data-id="${clan.id}"><i class="fas fa-trash"></i> Delete</button>
-                </div>
-            `;
-
-            li.querySelector('.edit-btn').addEventListener('click', () => populateFormForEdit(clan));
-            li.querySelector('.delete-btn').addEventListener('click', () => deleteClan(clan.id, clan.name));
-
-            userClansList.appendChild(li);
-        });
-    } catch (err) {
-        console.error("Error fetching clans:", err);
-        loadingClansMsg.style.display = 'none';
-        userClansList.innerHTML = '<p style="color: var(--danger);">Could not load your clans.</p>';
     }
-}
 
-function populateFormForEdit(clan) {
-    resetForm();
-    clanIdInput.value = clan.id;
-    clanNameInput.value = clan.name || '';
-    clanDescriptionInput.value = clan.description || '';
-    clanDiscordInput.value = clan.link || '';
-    clanStatusInput.value = clan.status || 'Available for Requests (Includes Requirements)';
-    clanLogoUrlInput.value = clan.logo || '';
-    clanCoverImageUrlInput.value = clan.coverImage || '';
+    // --- 3. Input Validation & Word Count Limits ---
+    const clanName = clanNameInput.value.trim();
+    const clanDescription = clanDescriptionInput.value.trim();
+    const nameWords = countWords(clanName);
+    const descWords = countWords(clanDescription);
 
-    if (clan.logo) logoPreview.src = clan.logo;
-    if (clan.coverImage) bannerPreview.src = clan.coverImage;
+    if (!clanName) {
+        displayFormMessage('Clan Name is required.');
+        clanNameInput.focus();
+        return;
+    }
+    if (nameWords > MAX_CLAN_NAME_WORDS) {
+        displayFormMessage(`Clan Name cannot exceed ${MAX_CLAN_NAME_WORDS} words (currently ${nameWords}).`);
+        clanNameInput.focus();
+        return;
+    }
+    if (!clanDescription) {
+        displayFormMessage('Clan Description is required.');
+        clanDescriptionInput.focus();
+        return;
+    }
+     if (descWords > MAX_CLAN_DESC_WORDS) {
+        displayFormMessage(`Clan Description cannot exceed ${MAX_CLAN_DESC_WORDS} words (currently ${descWords}).`);
+        clanDescriptionInput.focus();
+        return;
+    }
+    // Add other basic validations if needed (e.g., Discord URL format)
 
-    logoPreview.style.border = 'none';
-    bannerPreview.style.border = 'none';
-    formTitle.textContent = `Edit Clan: ${clan.name}`;
-    submitClanBtn.textContent = 'Update Clan';
-    cancelEditBtn.style.display = 'inline-block';
-    clanForm.scrollIntoView({ behavior: 'smooth' });
-}
-
-async function deleteClan(id, name) {
-    if (!confirm(`Are you sure you want to delete the clan "${name}"? This cannot be undone.`)) return;
+    // --- If all checks pass, proceed with submission ---
+    isSubmitting = true;
+    submitClanBtn.disabled = true; // Disable button during submission
+    submitClanBtn.textContent = 'Submitting...';
+    // Record the time *before* the async call starts
+    lastSubmitTimestamp = Date.now();
 
     try {
-        await clansCollection.doc(id).delete();
-        setFormMessage(`Clan "${name}" deleted.`);
-        if (clanIdInput.value === id) resetForm();
-        fetchUserClans();
-    } catch (err) {
-        console.error("Error deleting clan:", err);
-        setFormMessage(`Error deleting clan: ${err.message}`, true);
-    }
-}
+        // Gather form data (ensure you collect all necessary fields)
+        const clanData = {
+            id: clanIdInput.value || null, // Send null if creating new
+            name: clanName,
+            description: clanDescription,
+            discord_link: clanDiscordInput.value.trim(),
+            status: clanStatusInput.value,
+            logo_url: clanLogoUrlInput.value, // Assuming URL is stored here after upload
+            cover_image_url: clanCoverImageUrlInput.value, // Assuming URL is stored here
+            // Include owner_id or necessary authentication token if your API requires it
+        };
 
-document.addEventListener('DOMContentLoaded', loadUserProfile);
-window.loadUserProfile = loadUserProfile;
+        console.log("Submitting Clan Data:", clanData);
+
+        // --- !!! PLACEHOLDER: Replace with your actual API call !!! ---
+        // Example using fetch:
+        // const apiUrl = clanData.id ? `/api/clans/${clanData.id}` : '/api/clans';
+        // const method = clanData.id ? 'PUT' : 'POST';
+        // const response = await fetch(apiUrl, {
+        //     method: method,
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //         // Include Authorization headers if needed
+        //         // 'Authorization': `Bearer ${your_auth_token}`
+        //     },
+        //     body: JSON.stringify(clanData),
+        // });
+        // if (!response.ok) {
+        //    const errorData = await response.json();
+        //    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        // }
+        // const result = await response.json();
+        // console.log('API Success:', result);
+        // --- End Placeholder ---
+
+        // Simulate API success for demonstration
+        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate network delay
+        console.log("Simulated API Success");
+        displayFormMessage(`Clan ${clanData.id ? 'updated' : 'created'} successfully!`, false);
+
+
+        // Refresh clan list and reset form on success
+        // resetClanForm(); // You might need a function to fully reset the form
+        clanForm.reset(); // Basic reset
+        logoPreview.src = '#'; // Reset previews
+        bannerPreview.src = '#';
+        logoPreview.style.display = 'none';
+        bannerPreview.style.display = 'none';
+        clanIdInput.value = ''; // Ensure ID is cleared
+        formTitle.textContent = 'Create New Clan';
+        cancelEditBtn.style.display = 'none'; // Hide cancel button
+        // await fetchUserClans(); // Refresh the list from the server
+
+    } catch (error) {
+        console.error('Clan submission error:', error);
+        displayFormMessage(`Error: ${error.message}`);
+        // Don't reset the rate limit timestamp on failure, let the cooldown apply
+    } finally {
+        isSubmitting = false; // Re-enable submission possibility
+        submitClanBtn.disabled = false; // Re-enable button
+        submitClanBtn.textContent = 'Submit Clan';
+    }
+});
+
+// Add event listeners for real-time word count feedback (Optional but good UX)
+clanNameInput.addEventListener('input', () => {
+    const words = countWords(clanNameInput.value);
+    const feedbackEl = document.getElementById('clanNameWordCount'); // Add a <span id="clanNameWordCount"> near the input
+    if (feedbackEl) {
+         feedbackEl.textContent = `${words}/${MAX_CLAN_NAME_WORDS} words`;
+         feedbackEl.style.color = words > MAX_CLAN_NAME_WORDS ? 'red' : 'inherit';
+    }
+     clearFormMessage(); // Clear validation errors when user types
+});
+
+clanDescriptionInput.addEventListener('input', () => {
+    const words = countWords(clanDescriptionInput.value);
+    const feedbackEl = document.getElementById('clanDescWordCount'); // Add a <span id="clanDescWordCount"> near the input
+    if (feedbackEl) {
+        feedbackEl.textContent = `${words}/${MAX_CLAN_DESC_WORDS} words`;
+        feedbackEl.style.color = words > MAX_CLAN_DESC_WORDS ? 'red' : 'inherit';
+    }
+     clearFormMessage(); // Clear validation errors when user types
+});
+
+// Make sure to call fetchUserClans() when the profile page loads
+// Example: checkLoginStatus().then(user => { if (user) fetchUserClans(user.id); });
