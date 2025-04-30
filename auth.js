@@ -8,7 +8,7 @@ const signupError = document.getElementById('signupError');
 
 let redirectToProfile = false; // Flag to redirect after login/signup
 
-const blacklistedWords = ['admin', 'moderator', 'staff', 'support', 'god', 'dev']; // Customize as needed
+const blacklistedWords = ['nigger', 'n1gger', 'palestine', 'cunt', 'fuck', 'shit']; // Customize as needed
 
 // --- Modal Handling ---
 function openAuthModal(redirect = false) {
