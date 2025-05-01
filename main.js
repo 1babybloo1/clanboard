@@ -63,18 +63,6 @@ const hardcodedClans = [
         isHardcoded: true
     },
    {
-        id: 'hc-6',
-        name: "UNIQUE",
-        logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744011103/anotherimage_rkqmor.png",
-        description: "Always on Top. Always Unique",
-        status: "Available for Requests (Includes Requirements)",
-        link: "https://discord.gg/G5yd8KU5qm",
-        coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744011111/image_mvxyrf.png",
-        dateAdded: new Date("2025-04-08"),
-        isNew: true,
-        isHardcoded: true
-    },
-   {
         id: 'hc-7',
         name: "†ɢᴏᴛʜ†",
         logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744098277/image_2025-04-08_084435880_zq53ti.png",
