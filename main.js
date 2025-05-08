@@ -41,6 +41,9 @@ const hardcodedClans = [
     {
         id: 'hc-10', name: "TzN", logo: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744874654/image_2025-04-17_082412020_elmjnc.png", description: "TzN Is a competitive clan with many of its members originating from all types of shooters, but mainly Venge.io which most will know us for, but we are expanding to Poxel to seek new a great players to play competitive, We hope you can have a great stay when you make it in to TzN, but know it will be difficult to join, we are a close community, and looking for new members always! Thank you", status: "Available for Requests (Includes Requirements)", link: "https://discord.gg/GpU2D77Yxb", coverImage: "https://res.cloudinary.com/djttn4xvk/image/upload/v1744874654/image_2025-04-17_082412020_elmjnc.png", dateAdded: new Date("2025-04-17"), isHardcoded: true
     },
+    {
+        id: 'hc-11', name: "H8TR", logo: "", description: "H8TR is a new clan founded by Smillley. This clan is to only have good players. if you just started, I'm sorry, you can't join (jesus fucking christ thats toxic - bloo) Reqs in server", status: "Available for Requests (Includes Requirements)", link: "https://discord.gg/pn9rE3SDX7", coverImage: "", dateAdded: new Date("2025-05-8"), isHardcoded: true
+    },
 ];
 
 
